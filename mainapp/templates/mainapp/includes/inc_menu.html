@@ -1,0 +1,31 @@
+<div class="admin_menu">
+    <ul class="menu">
+        {% if not 'index' in request.resolver_match.url_name %}
+        <li><a class="log_entexit" href="{% url 'index' %}">главная</a></li>
+        {% endif %}
+        {% if user.is_authenticated %}
+            {% if user.is_superuser %}
+                <li><a style="color:#ba1b1b" class="log_regedit"
+                   href="{% url 'auth:edit' %}">администратор:{{ user.username }}</a></li>
+            {% else %}
+                <li><a  class="log_regedit" href="{% url 'auth:edit' %}">редактировать: {{ user.first_name|default:'пользователь' }}</a></li>
+            {% endif %}
+            <li><a class="log_entexit" href="{% url 'auth:logout' %}">выйти</a></li>
+        {% else %}
+{#            {% if 'register' in request.resolver_match.url_name %}#}
+{#                <li><a class="log_entexit" href="{% url 'auth:login' %}">войти</a></li>#}
+                {#            {% endif %}#}
+{#            {% elif 'login' in request.resolver_match.url_name %}#}
+{#                <li><a class="log_regedit" href="{% url 'auth:register' %}">регистрация</a></li>#}
+{#            {% else %}#}
+{#                <li><a class="log_entexit" href="{% url 'auth:login' %}">войти</a></li>#}
+{#                <li><a class="log_regedit" href="{% url 'auth:register' %}">регистрация</a></li>#}
+{#            {% endif %}#}
+            <li><a class="log_entexit" href="{% url 'auth:login' %}">войти</a></li>
+            <li><a class="log_regedit" href="{% url 'auth:register' %}">регистрация</a></li>
+        {% endif %}
+        {% if user.is_superuser %}
+                <li><a style="color:#ba1b1b" href="{% url 'auth:users_list' %}">пользователи</a></li>
+        {% endif %}
+    </ul>
+</div>
