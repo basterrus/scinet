@@ -5,9 +5,10 @@ from django.conf.urls.static import static
 from mainapp import views as mainapp
 
 urlpatterns = [
+    path('', mainapp.index, name='index'),
+    path('sections/', include('mainapp.urls', namespace='sections')),
     path('admin/', admin.site.urls),
     path('auth/', include('authapp.urls', namespace='auth')),
-    path('', mainapp.index, name='index'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
