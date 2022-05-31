@@ -3,14 +3,19 @@
 {% load media_tags %}
 
 {% block content %}
-        {% for account in accounts %}
+        {% for post in posts %}
             <div class="container_box">
-                <img class="index_block_avatar" src="{{ account.user.avatar|media_for_users }}" alt="avatar"/>
-                {{ account.user.first_name }} {{ account.patronymic }} {{ account.user.last_name }}<br>
-                Аккаунт: {{ account.user }}<br>
-                Создан: {{ account.created_at }}<br>
-                Обновлен: {{ account.updated_at }}<br>
-                <br>
+                <h2>{{ post.name }}</h2><br>
+                <p>{{ post.short_desc }}</p><br>
+                <p>{{ post.text }}</p><br>
+{#                <img class="index_block_avatar" src="{{ account.user.avatar|media_for_users }}" alt="avatar"/>#}
+{#                {{ account.user.first_name }}#}
+{#                {{ account.patronymic }}#}
+{#                {{ account.user.last_name }}<br>#}
+{#                Аккаунт: {{ account.user }}<br>#}
+{#                Создан: {{ account.created_at }}<br>#}
+{#                Обновлен: {{ account.updated_at }}<br>#}
+{#                <br>#}
             </div>
         {% endfor %}
 {% endblock %}

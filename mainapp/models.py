@@ -1,4 +1,5 @@
 from django.db import models
+from authapp.models import SNUser
 
 
 class SNSections(models.Model):
@@ -16,3 +17,16 @@ class SNSections(models.Model):
     #     verbose_name_plural = 'Категории'
     #     ordering = ('-id',)
 
+
+class SNPosts(models.Model):
+    """Таблица постов"""
+    section = models.ForeignKey(SNSections, on_delete=models.CASCADE, verbose_name='Раздел поста')
+    user = models.ForeignKey(SNUser, on_delete=models.CASCADE, verbose_name='Раздел поста')
+    name = models.CharField(max_length=128, verbose_name='Название поста')
+    image = models.ImageField(upload_to='posts', blank=True, null=True, verbose_name='Превьюшка поста')
+    text = models.TextField(verbose_name='Текст поста')
+    short_desc = models.CharField(max_length=255, verbose_name='Краткое описание поста')
+    description = models.TextField(verbose_name='Описание поста')
+    is_active = models.BooleanField(default=True, db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

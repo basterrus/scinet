@@ -2,7 +2,7 @@
     <ul class="menu">
         <li><a href="{% url 'index' %}">Главная</a></li>
             {% for link_item in links_menu %}
-                <li><a href="{% url 'mainapp:sections' link_item.pk %}">
+                <li><a href="{% url 'mainapp:section' link_item.pk %}">
                         {{ link_item.name }}
                     </a>
                 </li>
