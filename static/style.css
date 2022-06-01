@@ -3,24 +3,25 @@
 * {
     margin: 0;
     padding: 0;
+    /*background-color: #f0f0f0;*/
 }
 
 body {
     font-family: 'Montserrat', sans-serif;
 }
 
-html, body {
-    height: 95%;
-    -moz-transform: scale(0.95);
-    -webkit-transform: scale(0.95);
-    transform: scale(0.95);
-}
+/*html, body {*/
+/*    height: 95%;*/
+/*    -moz-transform: scale(0.95);*/
+/*    -webkit-transform: scale(0.95);*/
+/*    transform: scale(0.95);*/
+/*}*/
 
-.container {
-    width: 900px;
-    margin: 0 auto;
-    min-height: 100%;
-}
+/*.container {*/
+/*    width: 900px;*/
+/*    margin: 0 auto;*/
+/*    min-height: 100%;*/
+/*}*/
 
 
 .login_block {

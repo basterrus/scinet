@@ -1,0 +1,141 @@
+{% load static %}
+{% load  default %}
+
+
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>{% block title %}{{ title|title }}{% endblock %}</title>
+    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
+
+    {% block css %}
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+              integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
+              crossorigin="anonymous">
+        <link rel="stylesheet" href="{% static 'style.css' %}">
+    {% endblock %}
+
+    {% block js %}
+        <!-- JavaScript Bundle with Popper -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+                crossorigin="anonymous"></script>
+
+    {% endblock %}
+
+</head>
+<body>
+{% block header %}
+    <nav class="navbar navbar-expand-lg bg-light border-bottom fixed-top sticky-header">
+        <div class="container ">
+            <a class="navbar-brand" href="#">LOGO_HERE</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+                    aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse d-flex  justify-content-around" id="navbarNavAltMarkup">
+
+                <div class="navbar-nav col-6">
+                    <a class="nav-link active" aria-current="page" href="{% url 'mainapp:sections' %}">Главная</a>
+                    <a class="nav-link" href="#">Категории</a>
+                    <a class="nav-link" href="#">Посты</a>
+                    <a class="nav-link disabled" href="#">item</a>
+                    <a class="nav-link disabled" href="#">item</a>
+                </div>
+                <div class="navbar-nav">
+                    {% block menu %}
+                        {% include 'mainapp/includes/inc_menu.html' %}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+    </nav>
+{% endblock %}
+
+<br>
+{% block content %}
+    <div class="container mt-5">
+        <div class="row col-12">
+            <div class="col-8">
+                <div class="">
+                    <div class="row border bg-light">
+                        <p class="text-uppercase pt-2 fs-3">все потоки</p>
+                        <div class="thread-header">
+                            <div class="navbar navbar-expand-lg d-flex pb-3">
+                                <a class="text-uppercase text-decoration-none text-muted me-3" href="#">статьи</a>
+                                <a class="text-uppercase text-decoration-none text-muted me-3" href="#">новости</a>
+                                <a class="text-uppercase text-decoration-none text-muted me-3" href="#">хабы</a>
+                                <a class="text-uppercase text-decoration-none text-muted me-3" href="#">авторы</a>
+                                <a class="text-uppercase text-decoration-none text-muted me-3" href="#">компании</a>
+                            </div>
+                            <div class="search bg-light">
+                                <form class="d-flex" role="search">
+                                    <input class="form-control me-2" type="search" placeholder="Найти"
+                                           aria-label="Search">
+                                    <button class="btn btn-outline-secondary" type="submit">Найти</button>
+                                </form>
+                                <br>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pt-3"></div>
+
+                    <div class="card w-100">
+                        {% block post-card %}
+{#                            тут код карточки на странице index#}
+                        {% endblock %}
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-3">
+                <div class="border best-blogs ">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item text-uppercase fs-4 bg-light">категории</li>
+                        <li class="list-group-item text-uppercase">
+                            <a href="#" class="text-muted text-decoration-none">дизайн</a></li>
+                        <li class="list-group-item text-uppercase"><a href="#"
+                                                                      class="text-muted text-decoration-none">веб
+                            разработка</a>
+                        </li>
+                        <li class="list-group-item text-uppercase"><a href="#"
+                                                                      class="text-muted text-decoration-none">мобильная
+                            разработка</a>
+                        </li>
+                        <li class="list-group-item text-uppercase"><a href="#"
+                                                                      class="text-muted text-decoration-none">маркетинг</a>
+                        <li class="list-group-item text-uppercase"><a href="#"
+                                                                      class="text-muted text-decoration-none">пусто</a>
+                        <li class="list-group-item text-uppercase"><a href="#"
+                                                                      class="text-muted text-decoration-none">пусто</a>
+                        <li class="list-group-item text-uppercase"><a href="#"
+                                                                      class="text-muted text-decoration-none">пусто</a>
+                        <li class="list-group-item text-uppercase"><a href="#"
+                                                                      class="text-muted text-decoration-none">пусто</a>
+                        <li class="list-group-item text-uppercase"><a href="#"
+                                                                      class="text-muted text-decoration-none">пусто</a>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+
+
+
+{% block footer %}
+    <nav class="navbar bg-light sticky-footer fixed-bottom border-top">
+        <div class="container-fluid">
+            <div class="container ">
+                <a class="navbar-brand" href="#">Scinet 2022</a>
+            </div>
+        </div>
+    </nav>
+{% endblock %}
+</body>
+</html>
