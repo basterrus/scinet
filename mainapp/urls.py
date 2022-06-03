@@ -3,9 +3,9 @@ from mainapp import views as mainapp
 
 app_name = 'mainapp'
 
-
 urlpatterns = [
-    path('', mainapp.index, name='sections'),
-    path('<int:pk>', mainapp.section, name='sections')
+    path('<int:pk>', mainapp.SNPostsListView.as_view(), name='section'),
+    path('random', mainapp.RandomSNPostDetailView.as_view(), name='read_random'),
+    path('read/<pk>/', mainapp.SNPostDetailView.as_view(), name='read'),
 ]
 
