@@ -5,7 +5,7 @@ from django.conf.urls.static import static
 from mainapp import views as mainapp
 
 urlpatterns = [
-    path('', mainapp.section, name='index'),
+    path('', mainapp.SNPostsListView.as_view(), name='index'),
     path('sections/', include('mainapp.urls', namespace='sections')),
     path('admin/', admin.site.urls),
     path('auth/', include('authapp.urls', namespace='auth')),
