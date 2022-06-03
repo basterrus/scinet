@@ -40,7 +40,7 @@ class SNPostsListView(ListView):
         context = super().get_context_data(**kwargs)
         section_pk = self.kwargs.get('pk')
         context['links_menu'] = get_links_menu()
-        context['category'] = SNSections.objects.get(pk=section_pk)
+        context['category'] = SNSections.objects.filter(pk=section_pk)
         return context
 
 
