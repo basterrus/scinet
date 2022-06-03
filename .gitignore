@@ -3,6 +3,7 @@
 __pycache__
 venv
 env
+db.sqlite3
 .env
 ./.env
 *.log
