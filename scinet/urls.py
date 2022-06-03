@@ -7,8 +7,9 @@ from mainapp import views as mainapp
 urlpatterns = [
     path('', mainapp.section, name='index'),
     path('sections/', include('mainapp.urls', namespace='sections')),
-    path('admin/', admin.site.urls),
+    path('posts/', include('blogapp.urls', namespace='blogs')),
     path('auth/', include('authapp.urls', namespace='auth')),
+    path('admin/', admin.site.urls),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

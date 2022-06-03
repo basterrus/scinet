@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from authapp.models import SNUser, SNUserProfile
-from mainapp.models import SNSections, SNPosts
+from blogapp.models import SNSections, SNPosts
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 from django.urls import reverse_lazy, reverse
 
