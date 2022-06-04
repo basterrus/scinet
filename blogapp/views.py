@@ -28,5 +28,3 @@ class SNPostUpdateView(UpdateView):
 
 class SNPostDeleteView(DeleteView):
     pass
-
-
