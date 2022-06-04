@@ -13,7 +13,7 @@ class SNPostDetailView(DetailView):
 class SNPostCreateView(CreateView):
     model = SNPosts
     template_name = 'blogapp/post_crud/post_detail.html'
-    success_url = reverse_lazy('mainapp:sections')
+    success_url = reverse_lazy('index')
     form_class = SNPostForm
 
     def get_context_data(self, *args, **kwargs):
