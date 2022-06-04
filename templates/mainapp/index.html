@@ -33,19 +33,19 @@
                             scinet ждёт твой новый пост +
                         </a></h3>
                     </div>
-
+                    {% for post in posts %}
                     <div class="card w-100">
                         <div class="card-header">
                             <div class="user-info d-flex m-auto pt-1">
                                 <div class="user-photo pt-1">
-                                    <img src="{{ user.avatar|media_for_users }}" alt="user-logo" width="30px"
+                                    <img src="{{ post.user.avatar|media_for_users }}" alt="user-logo" width="30px"
                                          height="30px">
                                 </div>
                                 <div class="user-name ms-3 pt-2">
-                                    <p><a href="#" class="text-muted text-decoration-none">{{ user.username }}</a></p>
+                                    <p><a href="#" class="text-muted text-decoration-none">{{ post.user.username }}</a></p>
                                 </div>
                                 <div class="passed-time ms-3 pt-2">
-                                    <small class="text-muted">Last updated 3 mins ago</small>
+                                    <small class="text-muted">{{ post.updated_at}}</small>
                                 </div>
                                 <div class="reactions-block pt-2 d-flex">
                                     <div class="total-views ms-3">
@@ -73,24 +73,9 @@
 
                         </div>
                         <div class="card-body">
-                            <h5 class="card-title fs-4 font-weight-bold">Заголовок поста</h5>
-                            <img src="https://habrastorage.org/getpro/habr/upload_files/179/ce3/c45/179ce3c4535c1f24def13ada5ffbeefa.jpg"
-                                 alt="img" class="w-80 mx-auto d-block img-fluid">
+                            <h5 class="card-title fs-4 font-weight-bold">{{ post.name}}</h5>
                             <div class="text-post pt-2">
-                                <p class="card-text">Lorem Ipsum - это текст-"рыба", часто используемый в печати и
-                                    вэб-дизайне.
-                                    Lorem Ipsum является стандартной "рыбой" для текстов на латинице с начала XVI века.
-                                    В то время некий безымянный печатник создал большую коллекцию размеров и форм
-                                    шрифтов,
-                                    используя Lorem Ipsum для распечатки образцов. Lorem Ipsum не только успешно пережил
-                                    без
-                                    заметных изменений пять веков, но и перешагнул в электронный дизайн. Его
-                                    популяризации в
-                                    новое время послужили публикация листов Letraset с образцами Lorem Ipsum в 60-х
-                                    годах и,
-                                    в более недавнее время, программы электронной вёрстки типа Aldus PageMaker, в
-                                    шаблонах которых
-                                    используется Lorem Ipsum.</p>
+                                <p class="card-text">{{ post.text }}</p>
                             </div>
                         </div>
 
@@ -98,8 +83,10 @@
                             <a href="#" class="btn btn-outline-secondary w-25">Читать далее</a>
                         </div>
                     </div>
+                   {% endfor %}
                 </div>
             </div>
+
 
 
             <div class="col-3">
