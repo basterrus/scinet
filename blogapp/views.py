@@ -29,6 +29,17 @@ class SNPostCreateView(CreateView):
         context['title'] = 'Создание поста'
         return context
 
+    def post(self, request, *args, **kwargs):
+        """Автоматически делаем пользователя сессии автором поста"""
+        if request.user.is_authenticated:
+            form = self.form_class(request.POST)
+            if form.is_valid():
+                blog_post = form.save(
+                    commit=False)  # это нужно чтобы объект в модели создался, но зависимости пока не проверялись
+                blog_post.user = request.user
+                blog_post.save()
+                return HttpResponseRedirect(reverse("index"))
+
 
 class SNPostUpdateView(UpdateView):
     """Возможно тоже работает"""
