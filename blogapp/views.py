@@ -6,7 +6,7 @@ from blogapp.models import SNPosts
 
 
 class SNPostDetailView(DetailView):
-    """Показывает список постов, надо переделать на один пост"""
+    """Показывает пост"""
     model = SNPosts
     template_name = 'blogapp/post_crud/post_view.html'
 
@@ -18,7 +18,7 @@ class SNPostDetailView(DetailView):
 
 
 class SNPostCreateView(CreateView):
-    """"""
+    """Создание поста"""
     model = SNPosts
     template_name = 'blogapp/post_crud/post_form.html'
     success_url = reverse_lazy('index')
@@ -35,14 +35,14 @@ class SNPostCreateView(CreateView):
             form = self.form_class(request.POST)
             if form.is_valid():
                 blog_post = form.save(
-                    commit=False)  # это нужно чтобы объект в модели создался, но зависимости пока не проверялись
+                    commit=False)
                 blog_post.user = request.user
                 blog_post.save()
                 return HttpResponseRedirect(reverse("index"))
 
 
 class SNPostUpdateView(UpdateView):
-    """Редактирование постов"""
+    """Редактирование поста"""
     model = SNPosts
     template_name = 'blogapp/post_crud/post_form.html'
     form_class = SNPostForm
@@ -55,7 +55,7 @@ class SNPostUpdateView(UpdateView):
 
 
 class SNPostDeleteView(DeleteView):
-    """Нужно переписать под is_аctive"""
+    """Удаление поста"""
     model = SNPosts
     template_name = 'blogapp/post_crud/post_delete.html'
 
@@ -68,9 +68,7 @@ class SNPostDeleteView(DeleteView):
         return context
 
     def form_valid(self, form, *args, **kwargs):
-        """Этот кусок позволяет при отметке на чекбоксе с id del_box
-        удалить полностью пост из базы (такой вариант теперь используется
-        начиная с Django 4"""
+        """По умолчанию скрывает пост, если отметить чекбокс, то удалит пост полностью"""
         success_url = self.get_success_url()
         checkbox = self.request.POST.get('del_box', None)
         if checkbox:
