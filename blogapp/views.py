@@ -2,7 +2,7 @@ from django.http import HttpResponseRedirect
 from blogapp.forms import SNPostForm
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, UpdateView, DeleteView, DetailView
-from blogapp.models import SNPosts
+from blogapp.models import SNPosts, SNSections
 
 
 class SNPostDetailView(DetailView):
@@ -12,7 +12,7 @@ class SNPostDetailView(DetailView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context['object_list'] = SNPosts.objects.all().order_by('-is_active')
+        # context['comments'] = SNSections.objects.filter(pk=self.kwargs['pk'])
         context['title'] = 'Пост'
         return context
 
