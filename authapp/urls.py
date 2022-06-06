@@ -1,4 +1,7 @@
+from django.conf import settings
+from django.conf.urls.static import static
 from django.urls import path
+
 from authapp import views as authapp
 
 app_name = 'authapp'
@@ -19,3 +22,4 @@ urlpatterns = [
     # path('api/user_update/<int:pk>/', authapp.SNUserUpdateAPIView.as_view(), name='api_user_update'),
 ]
 
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
