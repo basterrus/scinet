@@ -42,6 +42,7 @@ class SNPostsListView(ListView):
         context['posts'] = SNPosts.objects.all()
         context['links_menu'] = get_links_menu()
         context['category'] = SNSections.objects.filter(pk=section_pk)
+        context['title'] = 'Главная'
         return context
 
 

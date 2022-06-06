@@ -8,19 +8,19 @@ from blogapp.models import SNPosts
 class SNPostDetailView(DetailView):
     """Показывает список постов, надо переделать на один пост"""
     model = SNPosts
-    template_name = 'blogapp/post_crud/post_detail.html'
+    template_name = 'blogapp/post_crud/post_view.html'
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context['object_list'] = SNPosts.objects.all().order_by('-is_active')
-        context['title'] = 'Список постов'
+        context['title'] = 'Пост'
         return context
 
 
 class SNPostCreateView(CreateView):
-    """Единственное 100% рабочее"""
+    """"""
     model = SNPosts
-    template_name = 'blogapp/post_crud/post_detail.html'
+    template_name = 'blogapp/post_crud/post_form.html'
     success_url = reverse_lazy('index')
     form_class = SNPostForm
 
@@ -42,9 +42,9 @@ class SNPostCreateView(CreateView):
 
 
 class SNPostUpdateView(UpdateView):
-    """Возможно тоже работает"""
+    """Редактирование постов"""
     model = SNPosts
-    template_name = 'blogapp/post_crud/post_detail.html'
+    template_name = 'blogapp/post_crud/post_form.html'
     form_class = SNPostForm
     success_url = reverse_lazy('index')
 
@@ -57,7 +57,7 @@ class SNPostUpdateView(UpdateView):
 class SNPostDeleteView(DeleteView):
     """Нужно переписать под is_аctive"""
     model = SNPosts
-    template_name = 'authapp/users_crud/user_delete.html'
+    template_name = 'blogapp/post_crud/post_delete.html'
 
     def get_success_url(self):
         return reverse('index')
