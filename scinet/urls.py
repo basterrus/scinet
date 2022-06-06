@@ -9,6 +9,7 @@ urlpatterns = [
     path('sections/', include('mainapp.urls', namespace='sections')),
     path('posts/', include('blogapp.urls', namespace='blogs')),
     path('auth/', include('authapp.urls', namespace='auth')),
+    path('users/', include('usersapp.urls', namespace='users')),
     path('admin/', admin.site.urls),
 ]
 

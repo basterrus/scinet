@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'authapp',
     'mainapp',
     'blogapp',
+    'usersapp',
     'rest_framework.authtoken',
 ]
 
