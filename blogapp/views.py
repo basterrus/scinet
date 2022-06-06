@@ -2,25 +2,25 @@ from django.http import HttpResponseRedirect
 from blogapp.forms import SNPostForm
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, UpdateView, DeleteView, DetailView
-from blogapp.models import SNPosts
+from blogapp.models import SNPosts, SNSections
 
 
 class SNPostDetailView(DetailView):
-    """Показывает список постов, надо переделать на один пост"""
+    """Показывает пост"""
     model = SNPosts
-    template_name = 'blogapp/post_crud/post_detail.html'
+    template_name = 'blogapp/post_crud/post_view.html'
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context['object_list'] = SNPosts.objects.all().order_by('-is_active')
-        context['title'] = 'Список постов'
+        # context['comments'] = SNSections.objects.filter(pk=self.kwargs['pk'])
+        context['title'] = 'Пост'
         return context
 
 
 class SNPostCreateView(CreateView):
-    """Единственное 100% рабочее"""
+    """Создание поста"""
     model = SNPosts
-    template_name = 'blogapp/post_crud/post_detail.html'
+    template_name = 'blogapp/post_crud/post_form.html'
     success_url = reverse_lazy('index')
     form_class = SNPostForm
 
@@ -29,11 +29,22 @@ class SNPostCreateView(CreateView):
         context['title'] = 'Создание поста'
         return context
 
+    def post(self, request, *args, **kwargs):
+        """Автоматически делаем пользователя сессии автором поста"""
+        if request.user.is_authenticated:
+            form = self.form_class(request.POST)
+            if form.is_valid():
+                blog_post = form.save(
+                    commit=False)
+                blog_post.user = request.user
+                blog_post.save()
+                return HttpResponseRedirect(reverse("index"))
+
 
 class SNPostUpdateView(UpdateView):
-    """Возможно тоже работает"""
+    """Редактирование поста"""
     model = SNPosts
-    template_name = 'blogapp/post_crud/post_detail.html'
+    template_name = 'blogapp/post_crud/post_form.html'
     form_class = SNPostForm
     success_url = reverse_lazy('index')
 
@@ -44,9 +55,9 @@ class SNPostUpdateView(UpdateView):
 
 
 class SNPostDeleteView(DeleteView):
-    """Нужно переписать под is_аctive"""
+    """Удаление поста"""
     model = SNPosts
-    template_name = 'authapp/users_crud/user_delete.html'
+    template_name = 'blogapp/post_crud/post_delete.html'
 
     def get_success_url(self):
         return reverse('index')
@@ -57,9 +68,7 @@ class SNPostDeleteView(DeleteView):
         return context
 
     def form_valid(self, form, *args, **kwargs):
-        """Этот кусок позволяет при отметке на чекбоксе с id del_box
-        удалить полностью пост из базы (такой вариант теперь используется
-        начиная с Django 4"""
+        """По умолчанию скрывает пост, если отметить чекбокс, то удалит пост полностью"""
         success_url = self.get_success_url()
         checkbox = self.request.POST.get('del_box', None)
         if checkbox:
