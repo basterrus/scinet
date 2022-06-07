@@ -19,7 +19,7 @@
                 {% if item.is_active == True %}
                 <tr>
                     <td>{{ item.name }}</td>
-                    <td>Подписаться</td>
+                    <td><a href="{% url 'auth:subscribe_add' item.id %}">Подписаться</a></td>
                 </tr>
                 {% endif %}
             {% endfor %}

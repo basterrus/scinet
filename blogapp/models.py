@@ -37,3 +37,9 @@ class SNPosts(models.Model):
     class Meta:
         verbose_name = 'Пост'
         verbose_name_plural = 'Посты'
+
+
+class SNSubscribe(models.Model):
+    """Подписки пользователя"""
+    user = models.ForeignKey(SNUser, on_delete=models.CASCADE, verbose_name='Пользователь')
+    section = models.ForeignKey(SNSections, on_delete=models.CASCADE, verbose_name='Раздел на который он подписан')

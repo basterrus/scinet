@@ -1,5 +1,6 @@
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.db.models import Q
 from django.http import Http404
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
@@ -11,7 +12,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from authapp.forms import SNUserLoginForm, SNUserRegisterForm, SNUserEditForm, SNUserProfileEditForm
 from authapp.models import SNUser, SNUserProfile
-from blogapp.models import SNPosts, SNSections
+from blogapp.models import SNPosts, SNSections, SNSubscribe
 from authapp.serializers import SNUserSerializer
 from django.views.generic import View
 
@@ -219,7 +220,23 @@ class SNPostDetailView(ListView):
 class SNSectionsDetailView(ListView):
     """Показывает все разделы для подписки и отписки"""
     model = SNSections
-    template_name = 'authapp/user_auth/all_section.html'
+    template_name = 'authapp/user_auth/section_subscribe.html'
 
     def get_queryset(self):
         return super().get_queryset()
+
+
+def add_subscribe(request, pk):
+    user = SNUser.objects.get(username=request.user)
+    section = SNSections.objects.get(id=pk)
+    if not SNSubscribe.objects.filter(Q(user=user) & Q(section=section)):
+        subscribe = SNSubscribe(user=user, section=section)
+        subscribe.save()
+    return HttpResponseRedirect(reverse('authapp:section_subscribe'))
+
+
+def del_subscribe(request, pk):
+    user = SNUser.objects.get(username=request.user)
+    section = SNSections.objects.get(id=pk)
+    SNSubscribe.objects.filter(Q(user=user) & Q(section=section)).delete()
+    return HttpResponseRedirect(reverse('authapp:section_subscribe'))
