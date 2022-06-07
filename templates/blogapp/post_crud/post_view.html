@@ -10,4 +10,23 @@
         Заголовок: {{ object.name }}<br>
         Текст поста: {{ object.text }}
     </div>
+    {% if user.is_authenticated %}
+    <div>
+        <a href="{% url 'blogs:comment_create' post_pk=object.id %}" class="btn btn-outline-secondary w-25">Добавить комментарий</a>
+    </div>
+    {% endif %}
+    <div>
+        Комментарии:
+        <ul>
+            {% for comment in comments %}
+            <div>{{comment.user.username}} от {{comment.created_at}}</div>
+            <p>{{comment.text}}
+                {% if user.id == comment.user.id %}
+                <a href="{% url 'blogs:comment_delete' post_pk=object.id pk=comment.id%}">удалить</a>
+                <a href="{% url 'blogs:comment_update' post_pk=object.id pk=comment.id%}">изменить</a>
+                {% endif %}
+            </p>
+            {% endfor %}
+        </ul>
+    </div>
 {% endblock %}

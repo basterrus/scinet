@@ -37,3 +37,17 @@ class SNPosts(models.Model):
     class Meta:
         verbose_name = 'Пост'
         verbose_name_plural = 'Посты'
+
+
+class Comments(models.Model):
+    """Комментарии"""
+    user = models.ForeignKey(SNUser, on_delete=models.CASCADE, verbose_name='Комментатор')
+    post = models.ForeignKey(SNPosts, on_delete=models.CASCADE, verbose_name='Пост')
+    text = models.CharField(max_length=1000, verbose_name='Текст комментария')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True, db_index=True)
+
+    class Meta:
+        verbose_name = 'Комментарий'
+        verbose_name_plural = 'Комментарии'
