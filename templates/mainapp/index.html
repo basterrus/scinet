@@ -1,4 +1,5 @@
 {% extends 'base_template.html' %}
+{% load media_tags %}
 {% load static %}
 {% load default %}
 
@@ -75,7 +76,10 @@
                         <div class="card-body">
                             <h5 class="card-title fs-4 font-weight-bold">{{ post.name}}</h5>
                             <div class="text-post pt-2">
-                                <p class="card-text">{{ post.text }}</p>
+                                <p class="card-text">{{ post.text|truncatechars:200 }}</p>
+                                <div class="user-photo pt-1">
+                                    <img class="w-80 mx-auto d-block img-fluid" src="/media/{{ post.image|index_empty }}" alt="post_picture">
+                                </div>
                             </div>
                         </div>
 

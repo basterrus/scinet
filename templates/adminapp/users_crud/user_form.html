@@ -1,0 +1,16 @@
+{% extends 'base_template.html' %}
+
+{% block content %}
+    <br>
+    <br>
+    <br>
+    <br>
+    <div class="admin_block">
+        <a href="{% url 'index' %}" class="admin_cross"></a>
+        <form class="form-horizontal" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form }}
+            <input class="auth_button" type="submit" value="Сохранить" class="btn-block btn-primary col-lg-12">
+        </form>
+    </div>
+{% endblock %}

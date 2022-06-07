@@ -1,0 +1,16 @@
+{% load default %}
+
+<div>
+    <ul style="color:#ba1b1b">
+        <li>
+            <a href={% url 'adminapp:users_list' %}>
+                пользователи
+            </a>
+        </li>
+        <li>
+            <a href={% url 'adminapp:posts_list' %}>
+                посты
+            </a>
+        </li>
+    </ul>
+</div>
