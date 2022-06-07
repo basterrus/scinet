@@ -11,6 +11,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from authapp.forms import SNUserLoginForm, SNUserRegisterForm, SNUserEditForm, SNUserProfileEditForm
 from authapp.models import SNUser, SNUserProfile
+from blogapp.models import SNPosts, SNSections
 from authapp.serializers import SNUserSerializer
 from django.views.generic import View
 
@@ -204,3 +205,21 @@ class SNUserUpdateAPIView(APIView):
         item = self.get_object(pk)
         item.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class SNPostDetailView(ListView):
+    """Показывает все посты пользователя"""
+    model = SNPosts
+    template_name = 'authapp/user_auth/all_users_post.html'
+
+    def get_queryset(self):
+        return super().get_queryset().filter(user=self.request.user)
+
+
+class SNSectionsDetailView(ListView):
+    """Показывает все разделы для подписки и отписки"""
+    model = SNSections
+    template_name = 'authapp/user_auth/all_section.html'
+
+    def get_queryset(self):
+        return super().get_queryset()

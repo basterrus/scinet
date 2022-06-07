@@ -7,7 +7,7 @@
     <br>
     <br>
     <div>
-        <table class="table orders_list">
+        <table class="table">
             <thead>
             <tr>
                 <th>ID</th>
@@ -26,7 +26,7 @@
                     <td>{{ item.name }}</td>
                     <td>{{ item.created_at|date:"Y-m-d H:i:s" }}</td>
                     <td>{{ item.updated_at|date:"Y-m-d H:i:s" }}</td>
-                    {% if item.is_active == 'True' %}
+                    {% if item.is_active == True %}
                         <td>Активен</td>
                     {% else %}
                         <td>Не активен</td>
