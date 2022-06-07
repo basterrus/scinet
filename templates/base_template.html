@@ -36,6 +36,10 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse d-flex  justify-content-around" id="navbarNavAltMarkup">
+                <div>
+                    {% include 'adminapp/includes/inc_admin_menu.html' %}
+                </div>
+                <br>
                 <div class="navbar-nav col-6">
                     <a class="nav-link active" aria-current="page" href="{% url 'index' %}">Главная</a>
                     <a class="nav-link" href="#">Категории</a>
@@ -43,6 +47,7 @@
                     <a class="nav-link disabled" href="#">item</a>
                     <a class="nav-link disabled" href="#">item</a>
                 </div>
+
                 <div class="navbar-nav">
                     {% block menu %}
                         {% include 'mainapp/includes/inc_menu.html' %}

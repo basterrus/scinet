@@ -1,6 +1,10 @@
 {% extends 'base_template.html' %}
 
 {% block content %}
+    <br>
+    <br>
+    <br>
+    <br>
     <div class="del_block">
         {% if object.is_active %}
             Уверены, что хотите удалить пользователя {{ user.name }}?
@@ -15,7 +19,7 @@
             {% csrf_token %}
             <input type="submit" class="btn-block btn-danger col-lg-12" value="Да">
         </form>
-        <button onclick="document.location='{% url 'authapp:users_list' %}'" class="btn-block btn-success col-lg-12">
+        <button onclick="document.location='{% url 'adminapp:users_list' %}'" class="btn-block btn-success col-lg-12">
             Отмена
         </button>
     </div>
