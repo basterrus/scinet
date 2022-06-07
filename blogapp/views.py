@@ -1,8 +1,10 @@
 from django.http import HttpResponseRedirect
-from blogapp.forms import SNPostForm
+from blogapp.forms import SNPostForm, CommentForm
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, UpdateView, DeleteView, DetailView
-from blogapp.models import SNPosts, SNSections
+from blogapp.models import SNPosts, SNSections, Comments
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
 
 
 class SNPostDetailView(DetailView):
@@ -12,7 +14,7 @@ class SNPostDetailView(DetailView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        # context['comments'] = SNSections.objects.filter(pk=self.kwargs['pk'])
+        context['comments'] = Comments.objects.filter(is_active=True, post__pk=self.kwargs['pk'])
         context['title'] = 'Пост'
         return context
 
@@ -81,3 +83,54 @@ class SNPostDeleteView(DeleteView):
                 self.object.is_active = True
             self.object.save()
             return HttpResponseRedirect(success_url)
+
+
+@method_decorator(login_required, name='dispatch')
+class CommentCreateView(CreateView):
+    """Создание комментария"""
+    model = Comments
+    template_name = 'blogapp/comment_crud/comment_create.html'
+    form_class = CommentForm
+
+    def get_success_url(self):
+        return reverse('blogs:post_read', args=[self.kwargs['post_pk']])
+
+    def post(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            form = self.form_class(request.POST)
+            if form.is_valid():
+                post_pk = self.kwargs['post_pk']
+                comment = form.save(
+                    commit=False)
+                comment.user = request.user
+                comment.post = SNPosts.objects.get(pk=post_pk)
+                comment.save()
+                return HttpResponseRedirect(self.get_success_url())
+
+
+@method_decorator(login_required, name='dispatch')
+class CommentUpdateView(UpdateView):
+    """Редактирование комментария"""
+    model = Comments
+    template_name = 'blogapp/comment_crud/comment_create.html'
+    form_class = CommentForm
+
+    def get_success_url(self):
+        return reverse('blogs:post_read', args=[self.kwargs['post_pk']])
+
+
+@method_decorator(login_required, name='dispatch')
+class CommentDeleteView(DeleteView):
+    """Удаление комментария"""
+    model = Comments
+    template_name = 'blogapp/comment_crud/comment_delete.html'
+
+    def get_success_url(self):
+        return reverse('blogs:post_read', args=[self.kwargs['post_pk']])
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.is_active = False
+        self.object.save()
+
+        return HttpResponseRedirect(self.get_success_url())
