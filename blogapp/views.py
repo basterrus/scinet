@@ -1,10 +1,11 @@
-from django.http import HttpResponseRedirect
-from blogapp.forms import SNPostForm, CommentForm
-from django.urls import reverse_lazy, reverse
-from django.views.generic import CreateView, UpdateView, DeleteView, DetailView
-from blogapp.models import SNPosts, SNSections, Comments
-from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect
+from django.urls import reverse_lazy, reverse
+from django.utils.decorators import method_decorator
+from django.views.generic import CreateView, UpdateView, DeleteView, DetailView
+
+from blogapp.forms import SNPostForm, CommentForm
+from blogapp.models import SNPosts, Comments
 
 
 class SNPostDetailView(DetailView):
@@ -13,12 +14,13 @@ class SNPostDetailView(DetailView):
     template_name = 'blogapp/post_crud/post_view.html'
 
     def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
+        context = super().get_context_data(**kwargs)
         context['comments'] = Comments.objects.filter(is_active=True, post__pk=self.kwargs['pk'])
         context['title'] = 'Пост'
         return context
 
 
+@method_decorator(login_required, name='dispatch')
 class SNPostCreateView(CreateView):
     """Создание поста"""
     model = SNPosts
@@ -27,7 +29,7 @@ class SNPostCreateView(CreateView):
     form_class = SNPostForm
 
     def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
+        context = super().get_context_data(**kwargs)
         context['title'] = 'Создание поста'
         return context
 
@@ -43,6 +45,7 @@ class SNPostCreateView(CreateView):
                 return HttpResponseRedirect(reverse("index"))
 
 
+@method_decorator(login_required, name='dispatch')
 class SNPostUpdateView(UpdateView):
     """Редактирование поста"""
     model = SNPosts
@@ -56,6 +59,7 @@ class SNPostUpdateView(UpdateView):
         return context
 
 
+@method_decorator(login_required, name='dispatch')
 class SNPostDeleteView(DeleteView):
     """Удаление поста"""
     model = SNPosts
@@ -132,5 +136,4 @@ class CommentDeleteView(DeleteView):
         self.object = self.get_object()
         self.object.is_active = False
         self.object.save()
-
         return HttpResponseRedirect(self.get_success_url())
