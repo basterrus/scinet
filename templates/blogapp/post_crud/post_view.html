@@ -6,14 +6,15 @@
     <br>
     <br>
     <br>
-    <div>
-        Заголовок: {{ object.name }}<br>
-        Текст поста: {{ object.text }}
+        Заголовок: {{ post.name }}<br>
+        Текст поста: {{ post.text }}
     </div>
     {% if user.is_authenticated %}
-    <div>
-        <a href="{% url 'blogs:comment_create' post_pk=object.id %}" class="btn btn-outline-secondary w-25">Добавить комментарий</a>
-    </div>
+        <form class="form-horizontal" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form }}
+            <input class="auth_button" type="submit" value="Опубликовать" class="btn-block btn-primary col-lg-12">
+        </form>
     {% endif %}
     <div>
         Комментарии:
