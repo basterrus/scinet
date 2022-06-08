@@ -1,0 +1,24 @@
+{% extends 'base_template.html' %}
+{% load static %}
+
+{% block content %}
+    <br>
+    <br>
+    <br>
+    <br>
+    <div class="container pt-5 w-25">
+        <div class="fs-4">Уверены, что хотите удалить раздел {{ object.name }}</div>
+        <form action="{% url 'adminapp:sections_delete' object.pk %}" method="post">
+            {% csrf_token %}
+                        <br>
+            <input class="btn border-danger border-1" type="submit" value="удалить">
+
+            <button class="btn border-success border-1">
+                <a href="{% url 'adminapp:sections' %}" class="text-dark text-decoration-none">отмена</a>
+            </button>
+        </form>
+    </div>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}

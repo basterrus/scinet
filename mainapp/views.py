@@ -1,6 +1,6 @@
 import random
 from blogapp.models import SNSections, SNPosts
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
 
 def get_links_menu():
@@ -42,6 +42,7 @@ class SNPostsListView(ListView):
         context['posts'] = SNPosts.objects.filter(is_active=True).order_by('-created_at')
         context['links_menu'] = get_links_menu()
         context['category'] = SNSections.objects.filter(pk=section_pk)
+        context['categories'] = SNSections.objects.all()
         context['title'] = 'Главная'
         return context
 

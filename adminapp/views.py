@@ -7,7 +7,8 @@ from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 from adminapp.forms import SNPostAdminForm
 from authapp.forms import SNUserRegisterForm, SNUserEditForm
 from authapp.models import SNUser
-from blogapp.models import SNPosts
+from blogapp.models import SNPosts, SNSections
+from adminapp.forms import SNSectionForm
 
 
 class AccessMixin:
@@ -131,6 +132,57 @@ class SNPostDeleteView(AccessMixin, DeleteMixin, DeleteView):
 
     def get_success_url(self):
         return reverse('index')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Удаление поста'
+        return context
+
+
+"""CRUD для управления категориями"""
+
+
+class SNSectionListView(AccessMixin, ListView):
+    model = SNSections
+    template_name = 'adminapp/sections_crud/section_list.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['object_list'] = SNSections.objects.all().order_by('-is_active')
+        context['title'] = 'Список всех постов'
+        return context
+
+
+class SNSectionCreateView(AccessMixin, CreateView):
+    model = SNSections
+    template_name = 'adminapp/sections_crud/sections_create.html'
+    success_url = reverse_lazy('index')
+    form_class = SNSectionForm
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['title'] = 'Создание поста'
+        return context
+
+
+class SNSectionUpdateView(AccessMixin, UpdateView):
+    model = SNSections
+    template_name = 'adminapp/sections_crud/sections_create.html'
+    form_class = SNSectionForm
+    success_url = reverse_lazy('adminapp:sections')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Редактирование поста'
+        return context
+
+
+class SNSectionDeleteView(AccessMixin, DeleteMixin, DeleteView):
+    model = SNSections
+    template_name = 'adminapp/sections_crud/sections_delete.html'
+
+    def get_success_url(self):
+            return reverse('adminapp:sections_list')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
