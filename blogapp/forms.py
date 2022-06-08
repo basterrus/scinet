@@ -4,8 +4,10 @@ from authapp.models import SNUser
 from blogapp.models import SNPosts, SNSections, Comments
 
 
-class SNPostForm(forms.ModelForm):
 
+
+
+class SNPostForm(forms.ModelForm):
     class Meta:
         model = SNPosts
         fields = ('name', 'text', 'section', 'image')
@@ -25,6 +27,7 @@ class SNPostForm(forms.ModelForm):
 
 class CommentForm(forms.ModelForm):
     """Форма для комментариев"""
+
     class Meta:
         model = Comments
         fields = ('text',)

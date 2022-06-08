@@ -2,8 +2,9 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
-from django.views.generic import CreateView, UpdateView, DeleteView, DetailView
+from django.views.generic import CreateView, UpdateView, DeleteView, DetailView, ListView
 
+from adminapp.views import AccessMixin, DeleteMixin
 from blogapp.forms import SNPostForm, CommentForm
 from blogapp.models import SNPosts, Comments
 

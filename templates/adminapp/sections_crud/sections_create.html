@@ -1,0 +1,22 @@
+{% extends 'base_template.html' %}
+
+
+{% block content %}
+    <div class="container">
+        <div class="pt-6">
+            <br><br><br>
+        </div>
+        <br>
+        <div class="posts pt-6 d-flex justify-content-between">
+            <p class="fs-3 text-uppercase">Новая категория</p>
+        </div>
+
+        <div class="col-lg-6">
+            <form class="form-horizontal" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form }}
+                <input class="btn-block btn-primary col-12 mt-4" type="submit" value="Сохранить">
+            </form>
+        </div>
+    </div>
+{% endblock %}

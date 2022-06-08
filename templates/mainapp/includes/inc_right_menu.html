@@ -1,0 +1,12 @@
+
+<div class="border best-blogs">
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item text-uppercase fs-4 bg-light">категории</li>
+        {% for category in categories %}
+            <li class="list-group-item text-uppercase">
+                <a href="#" class="text-muted text-decoration-none">{{ category.name }}</a></li>
+{#                <a href="{% url 'sections:posts' category.pk %}" class="text-muted text-decoration-none">{{ category.name }}</a></li>#}
+
+        {% endfor %}
+    </ul>
+</div>

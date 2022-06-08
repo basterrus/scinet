@@ -1,16 +1,16 @@
 {% extends 'base_template.html' %}
+{% load static %}
 
 {% block content %}
-    <br>
-    <br>
-    <br>
-    <br>
-    <div class="admin_block">
-        <a href="{% url 'index' %}" class="admin_cross"></a>
+    <div class="pt-5"></div>
+    <div class="pt-5 container">
+        <h2 class="ms-2">Новый пост</h2>
+    </div>
+    <div class="container admin_block pt-5 col-6">
         <form class="form-horizontal" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form }}
-            <input class="auth_button" type="submit" value="Сохранить" class="btn-block btn-primary col-lg-12">
+            <input class="auth_button btn-block btn-primary col-4" type="submit" value="Сохранить">
         </form>
     </div>
 {% endblock %}
