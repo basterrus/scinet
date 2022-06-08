@@ -1,0 +1,29 @@
+{% extends 'base_template.html' %}
+{% load static %}
+{% load media_tags %}
+
+{% block content %}
+    <br>
+    <br>
+    <br>
+    <div>
+        <table class="table orders_list">
+            <thead>
+            <tr>
+                <th>Название раздела</th>
+                <th>Подписаться</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in object_list %}
+                {% if item.is_active == True %}
+                <tr>
+                    <td>{{ item.name }}</td>
+                    <td><a href="{% url 'auth:subscribe_add' item.id %}">Подписаться</a></td>
+                </tr>
+                {% endif %}
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
