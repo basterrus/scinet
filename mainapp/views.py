@@ -39,7 +39,7 @@ class SNPostsListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         section_pk = self.kwargs.get('pk')
-        context['posts'] = SNPosts.objects.all()
+        context['posts'] = SNPosts.objects.filter(is_active=True).order_by('-created_at')
         context['links_menu'] = get_links_menu()
         context['category'] = SNSections.objects.filter(pk=section_pk)
         context['title'] = 'Главная'

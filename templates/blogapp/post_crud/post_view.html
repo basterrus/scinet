@@ -8,12 +8,11 @@
     <br>
         Заголовок: {{ post.name }}<br>
         Текст поста: {{ post.text }}
-    </div>
     {% if user.is_authenticated %}
         <form class="form-horizontal" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form }}
-            <input class="auth_button" type="submit" value="Опубликовать" class="btn-block btn-primary col-lg-12">
+            <input type="submit" value="Опубликовать" class="auth_button btn-block btn-primary col-lg-12">
         </form>
     {% endif %}
     <div>
