@@ -16,6 +16,7 @@ urlpatterns = [
     path('posts/', authapp.SNPostDetailView.as_view(), name='posts_user_list'),
     path('subscribe/', authapp.SNSectionsDetailView.as_view(), name='section_subscribe'),
     path('subscribe/add/<int:pk>/', authapp.add_subscribe, name='subscribe_add'),
+    path('subscribe/del/<int:pk>/', authapp.del_subscribe, name='subscribe_del'),
     # path('api/user_create/', authapp.SNUserCreateAPIView.as_view(), name='api_user_create'),
     # path('api/user_update/<int:pk>/', authapp.SNUserUpdateAPIView.as_view(), name='api_user_update'),
 ]
