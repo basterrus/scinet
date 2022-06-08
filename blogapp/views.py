@@ -10,14 +10,31 @@ from blogapp.models import SNPosts, Comments
 
 class SNPostDetailView(DetailView):
     """Показывает пост"""
-    model = SNPosts
+    model = Comments
     template_name = 'blogapp/post_crud/post_view.html'
+    form_class = CommentForm
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['form'] = self.form_class
+        context['post'] = SNPosts.objects.get(pk=self.kwargs['pk'])
         context['comments'] = Comments.objects.filter(is_active=True, post__pk=self.kwargs['pk'])
         context['title'] = 'Пост'
         return context
+
+    def get_success_url(self):
+        return reverse('blogs:post_read', args=[self.kwargs['pk']])
+
+    def post(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            form = self.form_class(request.POST)
+            if form.is_valid():
+                comment = form.save(
+                    commit=False)
+                comment.user = request.user
+                comment.post = SNPosts.objects.get(pk=self.kwargs['pk'])
+                comment.save()
+                return HttpResponseRedirect(self.get_success_url())
 
 
 @method_decorator(login_required, name='dispatch')
