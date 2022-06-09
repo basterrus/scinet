@@ -3,7 +3,7 @@
 {% load media_tags %}
 
 {% block content %}
-    <a href="{% url 'index' %}" class="edit_cross"></a>
+<div class="container">
     <div class="h2">
         Редактирование учетной записи
     </div>
@@ -14,4 +14,5 @@
         <img src="{{ user.avatar|media_for_users }}" alt="avatar"/>
         <input class="auth_button" type="submit" value="Cохранить">
     </form>
+</div>
 {% endblock %}

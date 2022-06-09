@@ -3,8 +3,9 @@
 
 {% block content %}
     <div class="container border">
-        <a href="{% url 'index' %}" class="edit_cross"></a>
+        <a href="{% url 'index' %}"></a>
         <div class="h2 text-center head">
+            <br>
             Вход в систему
         </div>
         <form class="form-horizontal" action="{% url 'authapp:login' %}" method="POST" enctype="multipart/form-data">
@@ -14,7 +15,8 @@
             </table>
             {{ error_text }}
             <br>
-            <input class="auth_button" type="submit" value="Войти">
+            <input class="auth_button enter" type="submit" value="Войти">
+            <br>
         </form>
     </div>
 {% endblock %}

@@ -3,8 +3,7 @@
 {% load media_tags %}
 
 {% block content %}
-    <br>
-    <br>
+<div class="container wrapper">
     <br>
     <div>
         <table class="table">
@@ -21,31 +20,32 @@
             </thead>
             <tbody>
             {% for item in object_list %}
-                <tr>
-                    <td class="td1">{{ item.pk }}</td>
-                    <td>{{ item.name }}</td>
-                    <td>{{ item.created_at|date:"Y-m-d H:i:s" }}</td>
-                    <td>{{ item.updated_at|date:"Y-m-d H:i:s" }}</td>
-                    {% if item.is_active == True %}
-                        <td>Активен</td>
-                    {% else %}
-                        <td>Не активен</td>
-                    {% endif %}
-                    <td>
-                        <a href="{% url 'blogapp:post_update' item.id %}">
-                            <img src="{% static 'img/edit.png' %}"
-                                 alt="edit" width="25px">
-                        </a>
-                    </td>
-                    <td>
-                        <a href="{% url 'blogapp:post_delete' item.id %}">
-                            <img src="{% static 'img/delete.png' %}"
-                                 alt="edit" width="25px">
-                        </a>
-                    </td>
-                </tr>
+            <tr>
+                <td class="td1">{{ item.pk }}</td>
+                <td>{{ item.name }}</td>
+                <td>{{ item.created_at|date:"Y-m-d H:i:s" }}</td>
+                <td>{{ item.updated_at|date:"Y-m-d H:i:s" }}</td>
+                {% if item.is_active == True %}
+                <td>Активен</td>
+                {% else %}
+                <td>Не активен</td>
+                {% endif %}
+                <td>
+                    <a href="{% url 'blogapp:post_update' item.id %}">
+                        <img src="{% static 'img/edit.png' %}"
+                             alt="edit" width="25px">
+                    </a>
+                </td>
+                <td>
+                    <a href="{% url 'blogapp:post_delete' item.id %}">
+                        <img src="{% static 'img/delete.png' %}"
+                             alt="edit" width="25px">
+                    </a>
+                </td>
+            </tr>
             {% endfor %}
             </tbody>
         </table>
     </div>
+</div>
 {% endblock %}

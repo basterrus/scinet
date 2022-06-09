@@ -3,19 +3,37 @@
 {% load media_tags %}
 
 {% block content %}
+<div class="container text">
+    <br>
+        <h1>{{ post.name }}</h1>
+    <br>
+        <p>{{ post.text }}</p>
+    <br>
+    {% if user.id == post.user.id %}
+                    <a href="{% url 'blogs:post_update' post.id %}"
+                       class="btn btn-outline-secondary me-2 col-4">Редактировать</a>
+
+                <a href="{% url 'blogs:post_delete' post.id %}"
+                   class="btn btn-outline-secondary me-2 col-4">
+                    {% if post.is_active %}
+                        Скрыть
+                    {% else %}
+                        Восстановить
+                    {% endif %}
+                </a>
+            {% endif %}
     <br>
     <br>
-    <br>
-        Заголовок: {{ post.name }}<br>
-        Текст поста: {{ post.text }}
     {% if user.is_authenticated %}
         <form class="form-horizontal" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form }}
+            <br>
             <input type="submit" value="Опубликовать" class="auth_button btn-block btn-primary col-lg-12">
         </form>
     {% endif %}
     <div>
+        <br>
         Комментарии:
         <ul>
             {% for comment in comments %}
@@ -29,4 +47,5 @@
             {% endfor %}
         </ul>
     </div>
+</div>
 {% endblock %}
