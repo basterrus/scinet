@@ -11,7 +11,7 @@ from blogapp.models import SNPosts, Comments
 
 class SNPostDetailView(DetailView):
     """Показывает пост"""
-    model = Comments
+    model = SNPosts
     template_name = 'blogapp/post_crud/post_view.html'
     form_class = CommentForm
 

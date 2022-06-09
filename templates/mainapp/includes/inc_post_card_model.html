@@ -1,3 +1,4 @@
+{% load media_tags %}
 
 {% for post in posts %}
     <div class="card mb-3">
@@ -5,6 +6,7 @@
             {% include 'mainapp/includes/inc_card_header_reactions.html' %}
         </div>
         <img src="/media/{{ post.image }}" class="card-img-top" alt="img">
+{#            <img src="/media/{{ post.image|index_empty }}" class="card-img-top" alt="img">#}
         <div class="card-body">
             <h5 class="card-title">{{ post.name }}</h5>
             <p class="card-text">{{ post.text|truncatechars:200 }}</p>
