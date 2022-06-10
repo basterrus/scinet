@@ -9,6 +9,7 @@
     <br>
         <p>{{ post.text }}</p>
     <br>
+    <img src="/media/{{ post.image }}" class="card-img-top post_img" alt="img" onerror="this.style.opacity='0'">
     {% if user.id == post.user.id %}
                     <a href="{% url 'blogs:post_update' post.id %}"
                        class="btn btn-outline-secondary me-2 col-4">Редактировать</a>
