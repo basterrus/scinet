@@ -145,11 +145,23 @@ class SNSectionsDetailView(ListView):
     model = SNSections
     template_name = 'authapp/user_auth/section_subscribe.html'
 
-    def get_queryset(self):
-        return super().get_queryset()
+    def get(self, request):
+        """Получаем для шаблона все подписки конкретного пользователя"""
+        section = SNSections.objects.all()
+        user = SNUser.objects.get(username=request.user)
+        user_subscribe = SNSubscribe.objects.filter(user=user.id)
+        subscribe = []
+        for el in user_subscribe:
+            subscribe.append(el.section.id)
+        context = {
+            'section': section,
+            'subscribe': subscribe,
+        }
+        return render(request, self.template_name, context=context)
 
 
 def add_subscribe(request, pk):
+    """Добавляет подписку для конкретного пользователя"""
     user = SNUser.objects.get(username=request.user)
     section = SNSections.objects.get(id=pk)
     if not SNSubscribe.objects.filter(Q(user=user) & Q(section=section)):
@@ -159,6 +171,7 @@ def add_subscribe(request, pk):
 
 
 def del_subscribe(request, pk):
+    """Удаляет подписку для конкретного пользователя"""
     user = SNUser.objects.get(username=request.user)
     section = SNSections.objects.get(id=pk)
     SNSubscribe.objects.filter(Q(user=user) & Q(section=section)).delete()

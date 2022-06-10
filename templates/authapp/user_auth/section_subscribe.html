@@ -15,11 +15,19 @@
             </tr>
             </thead>
             <tbody>
-            {% for item in object_list %}
+            {% for item in section %}
                 {% if item.is_active == True %}
                 <tr>
                     <td>{{ item.name }}</td>
-                    <td><a href="{% url 'auth:subscribe_add' item.id %}">Подписаться</a></td>
+                    {% if item.id in subscribe %}
+                        <td><a href="{% url 'auth:subscribe_del' item.id %}">
+                            <img src="{% static 'img/cancel.png' %}" alt="cancel" width="25px">
+                        </a></td>
+                    {% else %}
+                        <td><a href="{% url 'auth:subscribe_add' item.id %}">
+                            <img src="{% static 'img/apply.png' %}" alt="apply" width="25px">
+                        </a></td>
+                    {% endif %}
                 </tr>
                 {% endif %}
             {% endfor %}
