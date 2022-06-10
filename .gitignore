@@ -9,3 +9,5 @@ db.sqlite3
 *.log
 .vscode/
 /db
+/media/posts
+/media/users_avatars

@@ -3,8 +3,12 @@
 {% load media_tags %}
 
 {% block content %}
-    <div class="users_list">
-        <a class="useradd_button" href={% url 'auth:user_create' %}>
+    <br>
+    <br>
+    <br>
+    <br>
+    <div class=" container users_list">
+        <a class="useradd_button" href={% url 'adminapp:user_create' %}>
             <span>новый пользователь</span>
         </a>
         {% for object in object_list %}
@@ -29,11 +33,11 @@
                     <br>
                     {{ object.username }}<br>
                     <br>
-                    <a class="user_edit_button" href={% url 'authapp:user_update' object.pk %}>
+                    <a class="user_edit_button" href={% url 'adminapp:user_update' object.pk %}>
                         редактировать
                     </a>
                     <br>
-                    <a class="user_edit_button" href={% url 'authapp:user_delete' object.pk %}>
+                    <a class="user_edit_button" href={% url 'adminapp:user_delete' object.pk %}>
                         {% if object.is_active %}
                             удалить
                         {% else %}

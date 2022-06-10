@@ -1,39 +1,73 @@
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
-from blogapp.forms import SNPostForm
 from django.urls import reverse_lazy, reverse
-from django.views.generic import CreateView, UpdateView, DeleteView, DetailView
-from blogapp.models import SNPosts
+from django.utils.decorators import method_decorator
+from django.views.generic import CreateView, UpdateView, DeleteView, DetailView, ListView
+
+from adminapp.views import AccessMixin, DeleteMixin
+from blogapp.forms import SNPostForm, CommentForm
+from blogapp.models import SNPosts, Comments
 
 
 class SNPostDetailView(DetailView):
-    """Показывает список постов, надо переделать на один пост"""
+    """Показывает пост"""
     model = SNPosts
-    template_name = 'blogapp/post_crud/post_detail.html'
+    template_name = 'blogapp/post_crud/post_view.html'
+    form_class = CommentForm
 
     def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        context['object_list'] = SNPosts.objects.all().order_by('-is_active')
-        context['title'] = 'Список постов'
+        context = super().get_context_data(**kwargs)
+        context['form'] = self.form_class
+        context['post'] = SNPosts.objects.get(pk=self.kwargs['pk'])
+        context['comments'] = Comments.objects.filter(is_active=True, post__pk=self.kwargs['pk'])
+        context['title'] = 'Пост'
         return context
 
+    def get_success_url(self):
+        return reverse('blogs:post_read', args=[self.kwargs['pk']])
 
+    def post(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            form = self.form_class(request.POST)
+            if form.is_valid():
+                comment = form.save(
+                    commit=False)
+                comment.user = request.user
+                comment.post = SNPosts.objects.get(pk=self.kwargs['pk'])
+                comment.save()
+                return HttpResponseRedirect(self.get_success_url())
+
+
+@method_decorator(login_required, name='dispatch')
 class SNPostCreateView(CreateView):
-    """Единственное 100% рабочее"""
+    """Создание поста"""
     model = SNPosts
-    template_name = 'blogapp/post_crud/post_detail.html'
+    template_name = 'blogapp/post_crud/post_form.html'
     success_url = reverse_lazy('index')
     form_class = SNPostForm
 
     def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
+        context = super().get_context_data(**kwargs)
         context['title'] = 'Создание поста'
         return context
 
+    def post(self, request, *args, **kwargs):
+        """Автоматически делаем пользователя сессии автором поста"""
+        if request.user.is_authenticated:
+            form = self.form_class(request.POST)
+            if form.is_valid():
+                blog_post = form.save(
+                    commit=False)
+                blog_post.user = request.user
+                blog_post.save()
+                return HttpResponseRedirect(reverse("index"))
 
+
+@method_decorator(login_required, name='dispatch')
 class SNPostUpdateView(UpdateView):
-    """Возможно тоже работает"""
+    """Редактирование поста"""
     model = SNPosts
-    template_name = 'blogapp/post_crud/post_detail.html'
+    template_name = 'blogapp/post_crud/post_form.html'
     form_class = SNPostForm
     success_url = reverse_lazy('index')
 
@@ -43,10 +77,11 @@ class SNPostUpdateView(UpdateView):
         return context
 
 
+@method_decorator(login_required, name='dispatch')
 class SNPostDeleteView(DeleteView):
-    """Нужно переписать под is_аctive"""
+    """Удаление поста"""
     model = SNPosts
-    template_name = 'authapp/users_crud/user_delete.html'
+    template_name = 'blogapp/post_crud/post_delete.html'
 
     def get_success_url(self):
         return reverse('index')
@@ -57,9 +92,7 @@ class SNPostDeleteView(DeleteView):
         return context
 
     def form_valid(self, form, *args, **kwargs):
-        """Этот кусок позволяет при отметке на чекбоксе с id del_box
-        удалить полностью пост из базы (такой вариант теперь используется
-        начиная с Django 4"""
+        """По умолчанию скрывает пост, если отметить чекбокс, то удалит пост полностью"""
         success_url = self.get_success_url()
         checkbox = self.request.POST.get('del_box', None)
         if checkbox:
@@ -72,3 +105,53 @@ class SNPostDeleteView(DeleteView):
                 self.object.is_active = True
             self.object.save()
             return HttpResponseRedirect(success_url)
+
+
+@method_decorator(login_required, name='dispatch')
+class CommentCreateView(CreateView):
+    """Создание комментария"""
+    model = Comments
+    template_name = 'blogapp/comment_crud/comment_create.html'
+    form_class = CommentForm
+
+    def get_success_url(self):
+        return reverse('blogs:post_read', args=[self.kwargs['post_pk']])
+
+    def post(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            form = self.form_class(request.POST)
+            if form.is_valid():
+                post_pk = self.kwargs['post_pk']
+                comment = form.save(
+                    commit=False)
+                comment.user = request.user
+                comment.post = SNPosts.objects.get(pk=post_pk)
+                comment.save()
+                return HttpResponseRedirect(self.get_success_url())
+
+
+@method_decorator(login_required, name='dispatch')
+class CommentUpdateView(UpdateView):
+    """Редактирование комментария"""
+    model = Comments
+    template_name = 'blogapp/comment_crud/comment_create.html'
+    form_class = CommentForm
+
+    def get_success_url(self):
+        return reverse('blogs:post_read', args=[self.kwargs['post_pk']])
+
+
+@method_decorator(login_required, name='dispatch')
+class CommentDeleteView(DeleteView):
+    """Удаление комментария"""
+    model = Comments
+    template_name = 'blogapp/comment_crud/comment_delete.html'
+
+    def get_success_url(self):
+        return reverse('blogs:post_read', args=[self.kwargs['post_pk']])
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.is_active = False
+        self.object.save()
+        return HttpResponseRedirect(self.get_success_url())

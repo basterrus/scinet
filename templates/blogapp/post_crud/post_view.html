@@ -1,0 +1,52 @@
+{% extends 'base_template.html' %}
+{% load static %}
+{% load media_tags %}
+
+{% block content %}
+<div class="container text">
+    <br>
+        <h1>{{ post.name }}</h1>
+    <br>
+        <p>{{ post.text }}</p>
+    <br>
+    <img src="/media/{{ post.image }}" class="card-img-top post_img" alt="img" onerror="this.style.opacity='0'">
+    {% if user.id == post.user.id %}
+                    <a href="{% url 'blogs:post_update' post.id %}"
+                       class="btn btn-outline-secondary me-2 col-4">Редактировать</a>
+
+                <a href="{% url 'blogs:post_delete' post.id %}"
+                   class="btn btn-outline-secondary me-2 col-4">
+                    {% if post.is_active %}
+                        Скрыть
+                    {% else %}
+                        Восстановить
+                    {% endif %}
+                </a>
+            {% endif %}
+    <br>
+    <br>
+    {% if user.is_authenticated %}
+        <form class="form-horizontal" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form }}
+            <br>
+            <input type="submit" value="Опубликовать" class="auth_button btn-block btn-primary col-lg-12">
+        </form>
+    {% endif %}
+    <div>
+        <br>
+        Комментарии:
+        <ul>
+            {% for comment in comments %}
+            <div>{{comment.user.username}} от {{comment.created_at}}</div>
+            <p>{{comment.text}}
+                {% if user.id == comment.user.id %}
+                <a href="{% url 'blogs:comment_delete' post_pk=object.id pk=comment.id%}">удалить</a>
+                <a href="{% url 'blogs:comment_update' post_pk=object.id pk=comment.id%}">изменить</a>
+                {% endif %}
+            </p>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

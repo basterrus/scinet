@@ -1,14 +1,14 @@
 import random
 from blogapp.models import SNSections, SNPosts
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
 
 def get_links_menu():
     return SNSections.objects.filter(is_active=True)
 
 
-"""Для клика по логотипу: Переход на случайную статью"""
 class RandomSNPostDetailView(DetailView):
+    """Для клика по логотипу: Переход на случайную статью"""
     model = SNPosts
     # Необходимо добавить шаблон для постов
     template_name = 'mainapp/post.html'
@@ -22,8 +22,8 @@ class RandomSNPostDetailView(DetailView):
         return context
 
 
-"""Отображение постов в категории (или всех) по дате создания"""
 class SNPostsListView(ListView):
+    """Отображение постов в категории (или всех) по дате создания"""
     model = SNPosts
     template_name = 'mainapp/index.html'
 
@@ -39,14 +39,16 @@ class SNPostsListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         section_pk = self.kwargs.get('pk')
-        context['posts'] = SNPosts.objects.all()
+        context['posts'] = SNPosts.objects.filter(is_active=True).order_by('-created_at')
         context['links_menu'] = get_links_menu()
         context['category'] = SNSections.objects.filter(pk=section_pk)
+        context['categories'] = SNSections.objects.all()
+        context['title'] = 'Главная'
         return context
 
 
-"""Отображение_поста"""
 class SNPostDetailView(DetailView):
+    """Отображение_поста"""
     model = SNPosts
     # Необходимо добавить шаблон для постов
     template_name = 'mainapp/post.html'

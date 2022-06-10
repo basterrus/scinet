@@ -1,0 +1,37 @@
+{% extends 'base_template.html' %}
+{% load static %}
+{% load media_tags %}
+
+{% block content %}
+    <br>
+    <br>
+    <br>
+    <div>
+        <table class="table orders_list">
+            <thead>
+            <tr>
+                <th>Название раздела</th>
+                <th>Подписаться</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in section %}
+                {% if item.is_active == True %}
+                <tr>
+                    <td>{{ item.name }}</td>
+                    {% if item.id in subscribe %}
+                        <td><a href="{% url 'auth:subscribe_del' item.id %}">
+                            <img src="{% static 'img/cancel.png' %}" alt="cancel" width="25px">
+                        </a></td>
+                    {% else %}
+                        <td><a href="{% url 'auth:subscribe_add' item.id %}">
+                            <img src="{% static 'img/apply.png' %}" alt="apply" width="25px">
+                        </a></td>
+                    {% endif %}
+                </tr>
+                {% endif %}
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

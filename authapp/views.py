@@ -1,44 +1,20 @@
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.db.models import Q
 from django.http import Http404
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
-from django.utils.decorators import method_decorator
-from django.views.generic import ListView, CreateView, DeleteView, UpdateView
+from django.views.generic import CreateView, ListView
+from django.views.generic import View
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
 from authapp.forms import SNUserLoginForm, SNUserRegisterForm, SNUserEditForm, SNUserProfileEditForm
 from authapp.models import SNUser, SNUserProfile
+from blogapp.models import SNPosts, SNSections, SNSubscribe
 from authapp.serializers import SNUserSerializer
-from django.views.generic import View
-
-
-class AccessMixin:
-    """Делает view доступным только для суперпользователя"""
-
-    @method_decorator(user_passes_test(lambda u: u.is_superuser))
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
-
-
-class DeleteMixin:
-    """Даёт выбор для полного удаления через чекбокс"""
-
-    def form_valid(self, form, *args, **kwargs):
-        success_url = self.get_success_url()
-        checkbox = self.request.POST.get('del_box', None)
-        if checkbox:
-            self.object.delete()
-            return HttpResponseRedirect(success_url)
-        else:
-            if self.object.is_active:
-                self.object.is_active = False
-            else:
-                self.object.is_active = True
-            self.object.save()
-            return HttpResponseRedirect(success_url)
 
 
 class LoginView(View):
@@ -111,57 +87,6 @@ class EditView(View):
             return HttpResponseRedirect(reverse('auth:edit'))
 
 
-"""CRUD для управления пользователями"""
-
-
-class SNUserCreateView(AccessMixin, CreateView):
-    model = SNUser
-    template_name = 'authapp/users_crud/user_form.html'
-    success_url = reverse_lazy('authapp:users_list')
-    form_class = SNUserRegisterForm
-
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        context['title'] = 'Создание пользователя'
-        return context
-
-
-class SNUserListView(AccessMixin, ListView):
-    model = SNUser
-    template_name = 'authapp/users_crud/users.html'
-
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        context['object_list'] = SNUser.objects.all().order_by('-is_active')
-        context['title'] = 'Список пользователей'
-        return context
-
-
-class SNUserUpdateView(AccessMixin, UpdateView):
-    model = SNUser
-    template_name = 'authapp/users_crud/user_form.html'
-    form_class = SNUserEditForm
-    success_url = reverse_lazy('authapp:users_list')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'Редактирование пользователя'
-        return context
-
-
-class SNUserDeleteView(AccessMixin, DeleteMixin, DeleteView):
-    model = SNUser
-    template_name = 'authapp/users_crud/user_delete.html'
-
-    def get_success_url(self):
-        return reverse('authapp:users_list')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'Удаление пользователя'
-        return context
-
-
 class SNUserCreateAPIView(APIView):
     """API Создание пользователя"""
 
@@ -204,3 +129,50 @@ class SNUserUpdateAPIView(APIView):
         item = self.get_object(pk)
         item.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class SNPostDetailView(ListView):
+    """Показывает все посты пользователя"""
+    model = SNPosts
+    template_name = 'authapp/user_auth/all_users_post.html'
+
+    def get_queryset(self):
+        return super().get_queryset().filter(user=self.request.user)
+
+
+class SNSectionsDetailView(ListView):
+    """Показывает все разделы для подписки и отписки"""
+    model = SNSections
+    template_name = 'authapp/user_auth/section_subscribe.html'
+
+    def get(self, request):
+        """Получаем для шаблона все подписки конкретного пользователя"""
+        section = SNSections.objects.all()
+        user = SNUser.objects.get(username=request.user)
+        user_subscribe = SNSubscribe.objects.filter(user=user.id)
+        subscribe = []
+        for el in user_subscribe:
+            subscribe.append(el.section.id)
+        context = {
+            'section': section,
+            'subscribe': subscribe,
+        }
+        return render(request, self.template_name, context=context)
+
+
+def add_subscribe(request, pk):
+    """Добавляет подписку для конкретного пользователя"""
+    user = SNUser.objects.get(username=request.user)
+    section = SNSections.objects.get(id=pk)
+    if not SNSubscribe.objects.filter(Q(user=user) & Q(section=section)):
+        subscribe = SNSubscribe(user=user, section=section)
+        subscribe.save()
+    return HttpResponseRedirect(reverse('authapp:section_subscribe'))
+
+
+def del_subscribe(request, pk):
+    """Удаляет подписку для конкретного пользователя"""
+    user = SNUser.objects.get(username=request.user)
+    section = SNSections.objects.get(id=pk)
+    SNSubscribe.objects.filter(Q(user=user) & Q(section=section)).delete()
+    return HttpResponseRedirect(reverse('authapp:section_subscribe'))

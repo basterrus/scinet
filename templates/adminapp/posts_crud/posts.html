@@ -1,0 +1,39 @@
+{% extends 'base_template.html' %}
+{% load static %}
+{% load media_tags %}
+
+{% block content %}
+    <br>
+    <br>
+    <br>
+    <br>
+    <div class="container   users_list">
+        <a class="useradd_button" href={% url 'adminapp:post_create' %}>
+            <span>новый пост</span>
+        </a>
+        {% for object in object_list %}
+            <div class="container_box
+                {% if not object.is_active %}
+                    not_active
+                {% endif %}">
+                <div>
+                    Автор: {{ object.user }}<br>
+                    Заголовок: {{ object.name }}<br>
+                    Текст: {{ object.text|truncatechars:100 }}<br>
+                    Дата создания: {{ object.created_at }}<br>
+                    <a class="user_edit_button" href={% url 'adminapp:post_update' object.pk %}>
+                        редактировать
+                    </a>
+                    <br>
+                    <a class="user_edit_button" href={% url 'adminapp:post_delete' object.pk %}>
+                        {% if object.is_active %}
+                            удалить
+                        {% else %}
+                            восстановить
+                        {% endif %}
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

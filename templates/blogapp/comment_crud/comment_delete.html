@@ -1,0 +1,16 @@
+
+{% extends 'base_template.html' %}
+{% load static %}
+
+{% block content %}
+    <h3>Уверены, что хотите удалить данный комментарий?</h3>
+    <div>{{object.post.name}}</div>
+    <div>{{object.text}}</div>
+    <div class="admin_block">
+        <form class="form-horizontal" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form }}
+            <input class="auth_button" type="submit" value="Удалить" class="btn-block btn-primary col-lg-12">
+        </form>
+    </div>
+{% endblock %}

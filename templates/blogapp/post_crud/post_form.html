@@ -2,15 +2,15 @@
 {% load static %}
 
 {% block content %}
-    <br>
-    <br>
-    <div class="admin_block">
+<div class="container post_form">
+    <h2>Новый пост</h2>
+    <div class="admin_block col-6">
         <form class="form-horizontal" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form }}
-{#            {{ user_form.as_p }}#}
-{#            {{ profile_form.as_p }}#}
-            <input class="auth_button" type="submit" value="Сохранить" class="btn-block btn-primary col-lg-12">
+            <br>
+            <input class="auth_button btn-block btn-primary col-4" type="submit" value="Сохранить">
         </form>
     </div>
+</div>
 {% endblock %}

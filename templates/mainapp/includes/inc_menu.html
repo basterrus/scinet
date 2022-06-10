@@ -37,8 +37,13 @@
             {% if user.is_superuser %}
                 <li><a class="dropdown-item" href="#">Админ панель</a></li>
             {% endif %}
-            <li><a class="dropdown-item" href="#">Создать запись</a></li>
-            <li><a class="dropdown-item" href="#">Профиль</a></li>
+            <li><a class="dropdown-item" href="{% url 'authapp:section_subscribe' %}">Моя лента</a></li>
+            <li><a class="dropdown-item" href="{% url 'blogapp:post_create' %}">Создать статью</a></li>
+            <li><a class="dropdown-item" href="{% url 'auth:edit' %}">Профиль</a></li>
+            <li><a class="dropdown-item" href="{% url 'authapp:posts_user_list' %}">Статьи</a></li>
+            <li><a class="dropdown-item" href="#">Коментарии</a></li>
+            <li><a class="dropdown-item" href="#">Диалоги</a></li>
+            <li><a class="dropdown-item" href="#">Закладки</a></li>
             <li>
                 <hr class="dropdown-divider">
             </li>
