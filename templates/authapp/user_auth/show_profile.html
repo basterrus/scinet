@@ -11,20 +11,22 @@
           <div class="panel">
               <div class="user-heading round">
                   <a href="#">
-                      <img src="{{ user.avatar | media_for_users}}">
+                      <img src="{{ user_profile.avatar | media_for_users}}">
                   </a>
-                  <h1>{{ user.username }}</h1>
-                  <h1>{{ user.first_name }} {{ user.last_name }}</h1>
-                  <p>{{ user.email }}</p>
+                  <h1>{{ user_profile.username }}</h1>
+                  <h1>{{ user_profile.first_name }} {{ user_profile.last_name }}</h1>
+                  <p>{{ user_profile.email }}</p>
               </div>
 
               <ul class="nav nav-pills nav-stacked">
-                  <li class="active"><a href="{% url 'authapp:profile_user' %}"><i class="fa fa-user"></i>Профиль</a></li>
+                  {% if user.username == user_profile.username %}
+                  <li class="active"><a href="{% url 'authapp:profile_user' user.username %}"><i class="fa fa-user"></i>Профиль</a></li>
                   <li><a href="{% url 'authapp:edit' %}"><i class="fa fa-edit"></i>Редактировать профиль</a></li>
                   <li><a href="{% url 'authapp:section_subscribe' %}"><i class="fa fa-calendar"></i>Моя лента</a></li>
                   <li><a href="{% url 'blogapp:post_create' %}"><i class="fa fa-laptop"></i>Создать статью</a></li>
                   <li><a href="{% url 'authapp:posts_user_list' %}"><i class="fa fa-calendar"></i>Мои статьи<span class="label label-warning pull-right r-activity">{{ user_post_count }}</span></a></li>
                   <li><a href="{% url 'authapp:user_comments' %}"><i class="fa fa-calendar"></i>Мои коментарии<span class="label label-warning pull-right r-activity">{{ user_comments_count }}</span></a></li>
+                  {% endif %}
               </ul>
           </div>
       </div>
@@ -36,37 +38,37 @@
                   Тут должно быть краткое описание интересов =))))
               </div>
               <div class="panel-body bio-graph-info">
-                  <h1>Биография</h1>
+                  <h1 class="bio-graph-info">Биография</h1>
                   <div class="row">
                       <div class="bio-row">
-                          <p><span>Имя </span>{{ user.first_name }}</p>
+                          <p><span>Имя </span>{{ user_profile.first_name }}</p>
                       </div>
                       <div class="bio-row">
-                          <p><span>Фамилия </span>{{ user.last_name }}</p>
+                          <p><span>Фамилия </span>{{ user_profile.last_name }}</p>
                       </div>
                       <div class="bio-row">
-                          <p><span>Страна </span>: Australia</p>
+                          <p><span>Страна </span> Australia</p>
                       </div>
                       <div class="bio-row">
-                          <p><span>День рождения</span>: 13 July 1983</p>
+                          <p><span>День рождения</span> 13 July 1983</p>
                       </div>
                       <div class="bio-row">
-                          <p><span>Профессия </span>: UI Designer</p>
+                          <p><span>Профессия </span> UI Designer</p>
                       </div>
                       <div class="bio-row">
-                          <p><span>Email </span>: {{ user.email }}</p>
+                          <p><span>Email </span> {{ user_profile.email }}</p>
                       </div>
                       <div class="bio-row">
-                          <p><span>Cоздание профиля </span>: </p>
+                          <p><span>Создан</span></p>
                       </div>
                       <div class="bio-row">
-                          <p><span>Дата последнего захода </span>:</p>
+                          <p><span>Изменен</span></p>
                       </div>
                       <div class="bio-row">
-                          <p><span>Посты</span>: {{ user_post_count }}</p>
+                          <p><span>Посты</span>{{ user_post_count }}</p>
                       </div>
                       <div class="bio-row">
-                          <p><span>Коментарии</span>: {{ user_comments_count }}</p>
+                          <p><span>Коментарии</span>{{ user_comments_count }}</p>
                       </div>
                   </div>
               </div>

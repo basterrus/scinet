@@ -196,12 +196,13 @@ class SNProfileDetailView(ListView):
     """Показывает всю активность данного пользователя"""
     template_name = 'authapp/user_auth/show_profile.html'
 
-    def get(self, request):
+    def get(self, request, username):
         """Получаем для шаблона все данные конкретного пользователя"""
-        user = SNUser.objects.get(username=request.user)
+        user = SNUser.objects.get(username=username)
         user_comments_count = Comments.objects.filter(user=user.id).count()
         user_post_count = SNPosts.objects.filter(user=user.id).count()
         context = {
+            'user_profile': user,
             'user_comments_count': user_comments_count,
             'user_post_count': user_post_count,
         }
