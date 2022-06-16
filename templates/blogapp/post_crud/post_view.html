@@ -38,7 +38,11 @@
         Комментарии:
         <ul>
             {% for comment in comments %}
-            <div>{{comment.user.username}} от {{comment.created_at}}</div>
+            <div>
+                <a href="{% url 'authapp:profile_user' comment.user.username %}" class="text-muted text-decoration-none">
+                    {{comment.user.username}}
+                </a> от {{comment.created_at}}
+            </div>
             <p>{{comment.text}}
                 {% if user.id == comment.user.id %}
                 <a href="{% url 'blogs:comment_delete' post_pk=object.id pk=comment.id%}">удалить</a>
