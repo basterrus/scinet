@@ -3,11 +3,11 @@
 
 <div class="user-info d-flex pt-1">
     <div class="user-photo pt-1">
-        <img src="{{ post.user.avatar|media_for_users }}" alt="user-logo" width="30px"
-             height="30px">
+        <a href="{% url 'authapp:profile_user' post.user.username %}">
+            <img src="{{ post.user.avatar|media_for_users }}" alt="user-logo" width="30px" height="30px"></a>
     </div>
     <div class="user-name ms-3 pt-2">
-        <p><a href="#" class="text-muted text-decoration-none">{{ post.user.username }}</a></p>
+        <p><a href="{% url 'authapp:profile_user' post.user.username %}" class="text-muted text-decoration-none">{{ post.user.username }}</a></p>
     </div>
     <div class="passed-time ms-3 pt-2">
         <small class="text-muted">{{ post.updated_at }}</small>

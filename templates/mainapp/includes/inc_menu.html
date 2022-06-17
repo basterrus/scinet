@@ -29,7 +29,7 @@
 
 <div class="flex-shrink-0 dropdown d-flex">
     {% if user.is_authenticated %}
-        <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser"
+        <a href="{% url 'authapp:profile_user' user.username %}" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser"
            data-bs-toggle="dropdown" aria-expanded="false">
             <img src="{{ user.avatar | media_for_users}}" alt="mdo" width="32" height="32" class="rounded-circle">
             {{ user.username| default:'Пользователь' }} </a>
@@ -37,11 +37,11 @@
             {% if user.is_superuser %}
                 <li><a class="dropdown-item" href="#">Админ панель</a></li>
             {% endif %}
+            <li><a class="dropdown-item" href="{% url 'authapp:profile_user' user.username %}">Мой Профиль</a></li>
             <li><a class="dropdown-item" href="{% url 'authapp:section_subscribe' %}">Моя лента</a></li>
             <li><a class="dropdown-item" href="{% url 'blogapp:post_create' %}">Создать статью</a></li>
-            <li><a class="dropdown-item" href="{% url 'auth:edit' %}">Профиль</a></li>
-            <li><a class="dropdown-item" href="{% url 'authapp:posts_user_list' %}">Статьи</a></li>
-            <li><a class="dropdown-item" href="#">Коментарии</a></li>
+            <li><a class="dropdown-item" href="{% url 'authapp:posts_user_list' %}">Мои статьи</a></li>
+            <li><a class="dropdown-item" href="{% url 'authapp:user_comments' %}">Мои коментарии</a></li>
             <li><a class="dropdown-item" href="#">Диалоги</a></li>
             <li><a class="dropdown-item" href="#">Закладки</a></li>
             <li>
