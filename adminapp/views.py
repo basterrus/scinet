@@ -1,8 +1,9 @@
 from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponseRedirect
+from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views.generic import ListView, CreateView, DeleteView, UpdateView
+from django.views.generic import ListView, CreateView, DeleteView, UpdateView, DetailView
 
 from adminapp.forms import SNPostAdminForm
 from authapp.forms import SNUserRegisterForm, SNUserEditForm
@@ -105,11 +106,11 @@ class SNPostCreateView(AccessMixin, CreateView):
 
 class SNPostsListView(AccessMixin, ListView):
     model = SNPosts
-    template_name = 'adminapp/posts_crud/posts.html'
+    template_name = 'adminapp/posts_crud/posts_list.html'
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context['object_list'] = SNPosts.objects.all().order_by('-is_active')
+        context['object_list'] = SNPosts.objects.filter(is_moderated=False).order_by('-is_active')
         context['title'] = 'Список всех постов'
         return context
 
@@ -139,6 +140,23 @@ class SNPostDeleteView(AccessMixin, DeleteMixin, DeleteView):
         return context
 
 
+class SNPostsDetail(AccessMixin, DetailView):
+    model = SNPosts
+    template_name = 'adminapp/posts_crud/post_detail.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['title'] = 'Детализация поста'
+        return context
+
+
+def post_moderated(request, pk=None):
+    moderate_post = SNPosts.objects.get(id=pk)
+    if moderate_post:
+        moderate_post.moderated()
+    return render(request, 'adminapp/posts_crud/post_moderated.html')
+
+
 """CRUD для управления категориями"""
 
 
@@ -150,6 +168,20 @@ class SNSectionListView(AccessMixin, ListView):
         context = super().get_context_data(*args, **kwargs)
         context['object_list'] = SNSections.objects.all().order_by('-is_active')
         context['title'] = 'Список всех постов'
+        return context
+
+
+class SNSectionAllPostInCategories(ListView):
+    model = SNSections
+    template_name = 'adminapp/sections_crud/all_post_in_category.html'
+
+    # def get
+
+    def get_context_data(self, pk=None, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['post_list'] = SNPosts.objects.filter(section__pk=self.kwargs.get('pk')).select_related('section')
+        context['category_name'] = SNSections.objects.filter(id=self.kwargs.get('pk')).first()
+        context['title'] = 'Список всех постов в категории'
         return context
 
 
@@ -182,7 +214,7 @@ class SNSectionDeleteView(AccessMixin, DeleteMixin, DeleteView):
     template_name = 'adminapp/sections_crud/sections_delete.html'
 
     def get_success_url(self):
-            return reverse('adminapp:sections_list')
+        return reverse('adminapp:sections_list')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -1,0 +1,41 @@
+{% extends 'base_template.html' %}
+
+
+{% block content %}
+    <div class="container pt-5">
+    <p class="fs-4">Список постов  в категории {{ category_name }}</p>
+    </div>
+    <div class="container pt-5">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Автор</th>
+                <th scope="col">Заголовок</th>
+                <th scope="col">Текст</th>
+                <th scope="col">Дата создания</th>
+                <th scope="col">Статус</th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+
+            <tbody class="table-group-divider">
+            {% for post in post_list %}
+                <tr>
+                    <th scope="row">{{ post.id }}</th>
+                    <td>{{ post.user }}</td>
+                    <td>{{ post.name }}</td>
+                    <td>{{ post.text|truncatechars:100 }}</td>
+                    <td>{{ post.created_at }}</td>
+                    {% if post.is_moderated == True %}
+                        <td>Опубликован</td>
+                    {% else %}
+                        <td>На модерации</td>
+                    {% endif %}
+
+                </tr>
+                </tbody>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}
