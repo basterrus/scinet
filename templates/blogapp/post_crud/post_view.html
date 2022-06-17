@@ -30,18 +30,18 @@
     </a>
     {% endif %}
     {% if user.is_authenticated %}
-    <ul class="likes">
-        <li data-id="{{ post.id }}" data-type="post" data-action="like" title="Нравится">
-            {{ like_obj }}
-            <img src="{% static 'img/like.png' %}" style="width:30px; ">
-            <div data-count="like">{{ post.votes.likes.count }}</div>
-        </li>
-        <li data-id="{{ post.id }}" data-type="post" data-action="dislike" title="Не нравится"
-            style="margin-left: 20px;">
-            <img src="{% static 'img/dislike.png' %}" style="width:30px; ">
-            <div data-count="dislike">{{ post.votes.dislikes.count }}</div>
-        </li>
-    </ul>
+{#    <ul class="likes">#}
+{#        <li data-id="{{ post.id }}" data-type="post" data-action="like" title="Нравится">#}
+{#            {{ like_obj }}#}
+{#            <img src="{% static 'img/like.png' %}" style="width:30px; ">#}
+{#            <div data-count="like">{{ post.votes.likes.count }}</div>#}
+{#        </li>#}
+{#        <li data-id="{{ post.id }}" data-type="post" data-action="dislike" title="Не нравится"#}
+{#            style="margin-left: 20px;">#}
+{#            <img src="{% static 'img/dislike.png' %}" style="width:30px; ">#}
+{#            <div data-count="dislike">{{ post.votes.dislikes.count }}</div>#}
+{#        </li>#}
+{#    </ul>#}
     <form class="form-horizontal" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form }}
