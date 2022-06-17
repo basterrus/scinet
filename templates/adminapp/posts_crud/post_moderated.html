@@ -1,0 +1,14 @@
+{% extends 'base_template.html' %}
+
+
+{% block content %}
+
+<div class="container pt-5">
+    <br>
+
+    <h1>Пост опубликован</h1>
+    <br><br><br>
+    <p><a href="{% url 'adminapp:posts_list' %}" class="btn btn-outline-info text-dark">Список постов</a></p>
+</div>
+
+{% endblock %}

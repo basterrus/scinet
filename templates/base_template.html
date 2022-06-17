@@ -46,7 +46,7 @@
                 <div class="navbar-nav col-6">
                     <a class="nav-link active" aria-current="page" href="{% url 'index' %}">Главная</a>
                     <a class="nav-link" href="{% url 'adminapp:sections' %}">Категории</a>
-                    <a class="nav-link" href="#">Посты</a>
+{#                    <a class="nav-link" href="#">Посты</a>#}
                     {% if user.is_superuser %}
                         <a class="nav-link" href={% url 'adminapp:users_list' %}>Пользователи</a>
                         <a class="nav-link" href={% url 'adminapp:posts_list' %}>Посты </a>

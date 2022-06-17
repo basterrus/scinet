@@ -44,7 +44,7 @@
                         <td>{{ section.name }}</td>
                         <td>{{ section.title }}</td>
                         <td>{{ section.description }}</td>
-                        <td><p><a href="{% url 'adminapp:posts_list' %}" class="btn btn-outline-success col-sm-12">Просмотр</a></p>
+                        <td><p><a href="{% url 'adminapp:sections_all_posts' section.pk %}" class="btn btn-outline-success col-sm-12">Просмотр</a></p>
                             <p><a href="{% url 'adminapp:sections_update' section.pk %}" class="btn btn-outline-warning">Редактировать</a></p>
                             <p><a href="{% url 'adminapp:sections_delete' section.pk %}" class="btn btn-outline-danger col-sm-12">Удалить</a></p>
                         </td>
