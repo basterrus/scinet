@@ -6,7 +6,7 @@ from django.views.generic import CreateView, UpdateView, DeleteView, DetailView,
 
 from adminapp.views import AccessMixin, DeleteMixin
 from blogapp.forms import SNPostForm, CommentForm
-from blogapp.models import SNPosts, Comments, LikeDislike
+from blogapp.models import SNPosts, Comments, LikeDislike, Notifications
 
 import json
 from django.http import HttpResponse
@@ -40,6 +40,8 @@ class SNPostDetailView(DetailView):
                 comment.user = request.user
                 comment.post = SNPosts.objects.get(pk=self.kwargs['pk'])
                 comment.save()
+                notification = Notifications.create(comment.post, 'C', request.user)
+                notification.save()
                 return HttpResponseRedirect(self.get_success_url())
 
 
@@ -132,6 +134,8 @@ class CommentCreateView(CreateView):
                 comment.user = request.user
                 comment.post = SNPosts.objects.get(pk=post_pk)
                 comment.save()
+                notification = Notifications.create(comment.post, 'C', request.user)
+                notification.save()
                 return HttpResponseRedirect(self.get_success_url())
 
 
@@ -197,3 +201,39 @@ class VotesView(View):
             }),
             content_type="application/json"
         )
+
+
+@method_decorator(login_required, name='dispatch')
+class NotificationListView(ListView):
+    """Отображение всех уведомлений пользователя"""
+    model = Notifications
+    template_name = 'authapp/user_auth/notifications.html'
+
+    def get_queryset(self):
+        return super().get_queryset().filter(post__user=self.request.user, is_active=True)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Уведомления'
+        return context
+
+
+@login_required
+def delete_notification(request, pk):
+    """Удалить уведомление"""
+    notification = Notifications.objects.get(pk=pk)
+    notification.is_active = False
+    notification.save()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+@login_required
+def delete_all_notifications(request):
+    """Удалить все уведомления"""
+    notifications = Notifications.objects.filter(post__user=request.user, is_active=True)
+    for el in notifications:
+        el.is_active = False
+        el.save()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+

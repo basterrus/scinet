@@ -23,6 +23,9 @@ urlpatterns = [
          name='comment_like'),
     path('comment/<pk>/dislike/', blogapp.VotesView.as_view(model=Comments, vote_type=LikeDislike.DISLIKE),
          name='comment_dislike'),
+    path('notifications/', blogapp.NotificationListView.as_view(), name='notifications'),
+    path('notification_delete/<pk>', blogapp.delete_notification, name='notification_delete'),
+    path('notifications_delete/', blogapp.delete_all_notifications, name='notifications_delete_all'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
