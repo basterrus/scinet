@@ -1,73 +1,72 @@
-
-        function getCookie(name) {
-            var cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                var cookies = document.cookie.split(';');
-                for (var i = 0; i < cookies.length; i++) {
-                    var cookie = jQuery.trim(cookies[i]);
-                    // Does this cookie string begin with the name we want?
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
             }
-            return cookieValue;
         }
+    }
+    return cookieValue;
+}
 
-        // Настройка AJAX
-        $(function () {
-            $.ajaxSetup({
-                headers: { "X-CSRFToken": getCookie("csrftoken") }
-            });
-        });
+// Настройка AJAX
+$(function () {
+    $.ajaxSetup({
+        headers: { "X-CSRFToken": getCookie("csrftoken") }
+    });
+});
 
-        function like()
-        {
-            var like = $(this);
-            var type = like.data('type');
-            var pk = like.data('id');
-            var action = like.data('action');
-            var dislike = like.next();
+function like()
+{
+    var like = $(this);
+    var type = like.data('type');
+    var pk = like.data('id');
+    var action = like.data('action');
+    var dislike = like.next();
 
-            $.ajax({
-                url : "/api/" + type + "/" + pk + "/" + action + "/",
-                type : 'POST',
-                data : { 'obj' : pk },
+    $.ajax({
+        url : "/posts/" + type + "/" + pk + "/" + action + "/",
+        type : 'POST',
+        data : { 'obj' : pk },
 
-                success : function (json) {
-                    like.find("[data-count='like']").text(json.like_count);
-                    dislike.find("[data-count='dislike']").text(json.dislike_count);
-                }
-            });
-
-            return false;
+        success : function (json) {
+            like.find("[data-count='like']").text(json.like_count);
+            dislike.find("[data-count='dislike']").text(json.dislike_count);
         }
+    });
 
-        function dislike()
-        {
-            var dislike = $(this);
-            var type = dislike.data('type');
-            var pk = dislike.data('id');
-            var action = dislike.data('action');
-            var like = dislike.prev();
+    return false;
+}
 
-            $.ajax({
-                url : "/api/" + type +"/" + pk + "/" + action + "/",
-                type : 'POST',
-                data : { 'obj' : pk },
+function dislike()
+{
+    var dislike = $(this);
+    var type = dislike.data('type');
+    var pk = dislike.data('id');
+    var action = dislike.data('action');
+    var like = dislike.prev();
 
-                success : function (json) {
-                    dislike.find("[data-count='dislike']").text(json.dislike_count);
-                    like.find("[data-count='like']").text(json.like_count);
-                }
-            });
+    $.ajax({
+        url : "/posts/" + type +"/" + pk + "/" + action + "/",
+        type : 'POST',
+        data : { 'obj' : pk },
 
-            return false;
+        success : function (json) {
+            dislike.find("[data-count='dislike']").text(json.dislike_count);
+            like.find("[data-count='like']").text(json.like_count);
         }
+    });
 
-        // Подключение обработчиков
-        $(function() {
-            $('[data-action="like"]').click(like);
-            $('[data-action="dislike"]').click(dislike);
-        });
+    return false;
+}
+
+// Подключение обработчиков
+$(function() {
+    $('[data-action="like"]').click(like);
+    $('[data-action="dislike"]').click(dislike);
+});

@@ -162,7 +162,7 @@ class CommentDeleteView(DeleteView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-@method_decorator(login_required, name='dispatch')
+# @method_decorator(login_required, name='dispatch')
 class VotesView(View):
     """Лайки"""
     model = None
@@ -172,6 +172,7 @@ class VotesView(View):
 
     def post(self, request, pk):
         obj = self.model.objects.get(pk=pk)
+        print(f'11111111111111111111111111111111111')
         """GenericForeignKey не поддерживает метод get_or_create"""
         try:
             likedislike = LikeDislike.objects.get(content_type=ContentType.objects.get_for_model(obj), object_id=obj.id,
