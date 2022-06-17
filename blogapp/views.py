@@ -6,7 +6,12 @@ from django.views.generic import CreateView, UpdateView, DeleteView, DetailView,
 
 from adminapp.views import AccessMixin, DeleteMixin
 from blogapp.forms import SNPostForm, CommentForm
-from blogapp.models import SNPosts, Comments
+from blogapp.models import SNPosts, Comments, LikeDislike
+
+import json
+from django.http import HttpResponse
+from django.views import View
+from django.contrib.contenttypes.models import ContentType
 
 
 class SNPostDetailView(DetailView):
@@ -155,3 +160,40 @@ class CommentDeleteView(DeleteView):
         self.object.is_active = False
         self.object.save()
         return HttpResponseRedirect(self.get_success_url())
+
+
+# @method_decorator(login_required, name='dispatch')
+class VotesView(View):
+    """Лайки"""
+    model = None
+    """Модель данных (лайк статьи или комментария)"""
+    vote_type = None
+    """Like or dislike"""
+
+    def post(self, request, pk):
+        obj = self.model.objects.get(pk=pk)
+        print(f'11111111111111111111111111111111111')
+        """GenericForeignKey не поддерживает метод get_or_create"""
+        try:
+            likedislike = LikeDislike.objects.get(content_type=ContentType.objects.get_for_model(obj), object_id=obj.id,
+                                                  user=request.user)
+            if likedislike.vote is not self.vote_type:
+                likedislike.vote = self.vote_type
+                likedislike.save(update_fields=['vote'])
+                result = True
+            else:
+                likedislike.delete()
+                result = False
+        except LikeDislike.DoesNotExist:
+            obj.votes.create(user=request.user, vote=self.vote_type)
+            result = True
+
+        return HttpResponse(
+            json.dumps({
+                "result": result,
+                "like_count": obj.votes.likes().count(),
+                "dislike_count": obj.votes.dislikes().count(),
+                "sum_rating": obj.votes.sum_rating()
+            }),
+            content_type="application/json"
+        )

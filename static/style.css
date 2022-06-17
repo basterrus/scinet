@@ -253,3 +253,8 @@ a {
     display: block;
     margin: 0 auto;
 }
+
+ul.likes {
+    list-style-type: none;
+    display: flex;
+}
