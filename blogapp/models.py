@@ -109,3 +109,39 @@ class SNSubscribe(models.Model):
     """Подписки пользователя"""
     user = models.ForeignKey(SNUser, on_delete=models.CASCADE, verbose_name='Пользователь')
     section = models.ForeignKey(SNSections, on_delete=models.CASCADE, verbose_name='Раздел на который он подписан')
+
+
+class Notifications(models.Model):
+    """Уведомления"""
+
+    LIKE_NOTIFICATION = 'L'
+    COMMENT_NOTIFICATION = 'C'
+
+    TARGET_POST = 'P'
+    TARGET_COMMENT = 'C'
+
+    MODES = (
+        (LIKE_NOTIFICATION, 'Лайк'),
+        (COMMENT_NOTIFICATION, 'Комментарий')
+    )
+
+    TARGETS = (
+        (TARGET_POST, 'Пост'),
+        (TARGET_COMMENT, 'Комментарий')
+    )
+
+    post = models.ForeignKey(SNPosts, on_delete=models.CASCADE, verbose_name='Пост')
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_seen = models.BooleanField(default=False, db_index=True)
+    is_active = models.BooleanField(default=True, db_index=True)
+    mode = models.CharField(max_length=1, verbose_name="Вид уведомления", choices=MODES, default=LIKE_NOTIFICATION)
+    notifier = models.ForeignKey(SNUser, on_delete=models.CASCADE, verbose_name='Уведомитель')
+
+    class Meta:
+        verbose_name = 'Уведомление'
+        verbose_name_plural = 'Уведомления'
+
+    @classmethod
+    def create(cls, post, mode, notifier):
+        notification = cls(post=post, mode=mode, notifier=notifier)
+        return notification

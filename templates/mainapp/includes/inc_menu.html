@@ -38,6 +38,7 @@
                 <li><a class="dropdown-item" href="#">Админ панель</a></li>
             {% endif %}
             <li><a class="dropdown-item" href="{% url 'authapp:profile_user' user.username %}">Мой Профиль</a></li>
+            <li><a class="dropdown-item" href="{% url 'blogapp:notifications' %}">Уведомления</a></li>
             <li><a class="dropdown-item" href="{% url 'authapp:section_subscribe' %}">Моя лента</a></li>
             <li><a class="dropdown-item" href="{% url 'blogapp:post_create' %}">Создать статью</a></li>
             <li><a class="dropdown-item" href="{% url 'authapp:posts_user_list' %}">Мои статьи</a></li>

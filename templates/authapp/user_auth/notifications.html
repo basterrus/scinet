@@ -1,0 +1,35 @@
+Q{% extends 'base_template.html' %}
+{% load static %}
+{% load media_tags %}
+
+{% block content %}
+    <br>
+    <br>
+    <br>
+    <h2>
+        {% if object_list|length > 0 %}
+            Уведомления <a href="{% url 'blogapp:notifications_delete_all' %}" class="auth_button btn-block btn-primary col-lg-12">Удалить все</a>
+        {% else %}
+            Уведомления отстутствуют
+        {% endif %}
+    </h2>
+    <div>
+        {% for notify in object_list %}
+        <div>
+            <p>{{notify.created_at}}</p>
+            <p>Пользователь {{notify.notifier.username}}
+            {% if comment.mode == C %}
+                оставил комментарий под постом
+            {% else %}
+                оценил пост
+            {% endif %}
+            {{notify.post.name}}
+                <br>
+                <a href="{% url 'blogapp:post_read' notify.post.id %}" class="auth_button">Перейти к посту</a>
+                <a href="{% url 'blogapp:notification_delete' notify.pk %}" class="auth_button">Удалить</a>
+            </p>
+            <hr>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}
