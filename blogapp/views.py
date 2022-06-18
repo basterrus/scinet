@@ -6,7 +6,12 @@ from django.views.generic import CreateView, UpdateView, DeleteView, DetailView,
 
 from adminapp.views import AccessMixin, DeleteMixin
 from blogapp.forms import SNPostForm, CommentForm
-from blogapp.models import SNPosts, Comments
+from blogapp.models import SNPosts, Comments, LikeDislike, Notifications
+
+import json
+from django.http import HttpResponse
+from django.views import View
+from django.contrib.contenttypes.models import ContentType
 
 
 class SNPostDetailView(DetailView):
@@ -35,6 +40,8 @@ class SNPostDetailView(DetailView):
                 comment.user = request.user
                 comment.post = SNPosts.objects.get(pk=self.kwargs['pk'])
                 comment.save()
+                notification = Notifications.create(comment.post, 'C', request.user)
+                notification.save()
                 return HttpResponseRedirect(self.get_success_url())
 
 
@@ -127,6 +134,8 @@ class CommentCreateView(CreateView):
                 comment.user = request.user
                 comment.post = SNPosts.objects.get(pk=post_pk)
                 comment.save()
+                notification = Notifications.create(comment.post, 'C', request.user)
+                notification.save()
                 return HttpResponseRedirect(self.get_success_url())
 
 
@@ -155,3 +164,76 @@ class CommentDeleteView(DeleteView):
         self.object.is_active = False
         self.object.save()
         return HttpResponseRedirect(self.get_success_url())
+
+
+# @method_decorator(login_required, name='dispatch')
+class VotesView(View):
+    """Лайки"""
+    model = None
+    """Модель данных (лайк статьи или комментария)"""
+    vote_type = None
+    """Like or dislike"""
+
+    def post(self, request, pk):
+        obj = self.model.objects.get(pk=pk)
+        print(f'11111111111111111111111111111111111')
+        """GenericForeignKey не поддерживает метод get_or_create"""
+        try:
+            likedislike = LikeDislike.objects.get(content_type=ContentType.objects.get_for_model(obj), object_id=obj.id,
+                                                  user=request.user)
+            if likedislike.vote is not self.vote_type:
+                likedislike.vote = self.vote_type
+                likedislike.save(update_fields=['vote'])
+                result = True
+            else:
+                likedislike.delete()
+                result = False
+        except LikeDislike.DoesNotExist:
+            obj.votes.create(user=request.user, vote=self.vote_type)
+            result = True
+
+        return HttpResponse(
+            json.dumps({
+                "result": result,
+                "like_count": obj.votes.likes().count(),
+                "dislike_count": obj.votes.dislikes().count(),
+                "sum_rating": obj.votes.sum_rating()
+            }),
+            content_type="application/json"
+        )
+
+
+@method_decorator(login_required, name='dispatch')
+class NotificationListView(ListView):
+    """Отображение всех уведомлений пользователя"""
+    model = Notifications
+    template_name = 'authapp/user_auth/notifications.html'
+
+    def get_queryset(self):
+        return super().get_queryset().filter(post__user=self.request.user, is_active=True)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Уведомления'
+        return context
+
+
+@login_required
+def delete_notification(request, pk):
+    """Удалить уведомление"""
+    notification = Notifications.objects.get(pk=pk)
+    notification.is_active = False
+    notification.save()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+@login_required
+def delete_all_notifications(request):
+    """Удалить все уведомления"""
+    notifications = Notifications.objects.filter(post__user=request.user, is_active=True)
+    for el in notifications:
+        el.is_active = False
+        el.save()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+

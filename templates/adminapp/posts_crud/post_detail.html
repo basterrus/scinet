@@ -1,0 +1,35 @@
+{% extends 'base_template.html' %}
+{% load static %}
+{% load media_tags %}
+
+{% block content %}
+    <br>
+    <br>
+    <br>
+    <div class="container">
+        <p class="fs-4">Просмотр поста: <b>{{ object.name }}</b></p>
+        <div class="border"></div>
+        <div class="post_info pt-5">
+            {% if object.image %}
+                <p><img src="{{ object.image.url }}" alt="img"></p>
+            {% else %}
+                <p><img src="#" alt="img"></p>
+            {% endif %}
+            <p><b>ID поста: </b> {{ object.id }}</p>
+            <p><b>Категория поста: </b> {{ object.section }}</p>
+            <p><b>Заголовок поста: </b> {{ object.name }}</p>
+            <p><b>Текст поста: </b> {{ object.text }}</p>
+            <p><b>Статус видимости: </b> {{ object.is_active }}</p>
+            <p><b>Статус модерации</b>{{ object.is_moderated }}</p>
+        </div>
+        <div class="d-flex justify-content-start pt-4 ">
+            <p><a href="{% url 'adminapp:moderated' object.pk %}" class="btn btn-outline-info text-dark">Опубликовать</a></p>&nbsp&nbsp
+            <p><a href="#" class="btn btn-outline-danger text-dark">Отклонить</a></p>&nbsp&nbsp
+            <p><a href="{% url 'adminapp:posts_list' %}" class="btn btn-outline-success  text-dark">Список постов</a></p>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block footer %}
+{% endblock %}

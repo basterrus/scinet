@@ -1,0 +1,35 @@
+{% extends 'base_template.html' %}
+{% load static %}
+{% load media_tags %}
+
+{% block content %}
+    <br>
+    <br>
+    <br>
+    <div>
+        <table class="table orders_list">
+            <thead>
+            <tr>
+                <th>Наименовани поста</th>
+                <th>Комментарий</th>
+                <th>Редактировать</th>
+                <th>Удалить</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in user_comments %}
+                <tr>
+                    <td>{{ item.post }}</td>
+                    <td>{{ item.text }}</td>
+                    <td><a href="{% url 'blogapp:comment_update' item.post.id item.id %}">
+                        <img src="{% static 'img/edit.png' %}" alt="edit_comment" width="25px">
+                    </a></td>
+                    <td><a href="{% url 'blogapp:comment_delete' item.post.id item.id %}">
+                        <img src="{% static 'img/delete.png' %}" alt="del_comment" width="25px">
+                    </a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

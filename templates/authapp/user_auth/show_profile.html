@@ -1,0 +1,79 @@
+{% extends 'base_template.html' %}
+{% load static %}
+{% load media_tags %}
+
+{% block content %}
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{% static 'style_profile.css' %}">
+    <div class="container bootstrap snippets bootdey">
+    <div class="row">
+      <div class="profile-nav col-md-3">
+          <div class="panel">
+              <div class="user-heading round">
+                  <a href="#">
+                      <img src="{{ user_profile.avatar | media_for_users}}">
+                  </a>
+                  <h1>{{ user_profile.username }}</h1>
+                  <h1>{{ user_profile.first_name }} {{ user_profile.last_name }}</h1>
+                  <p>{{ user_profile.email }}</p>
+              </div>
+
+              <ul class="nav nav-pills nav-stacked">
+                  {% if user.username == user_profile.username %}
+                  <li class="active"><a href="{% url 'authapp:profile_user' user.username %}"><i class="fa fa-user"></i>Профиль</a></li>
+                  <li><a href="{% url 'authapp:edit' %}"><i class="fa fa-edit"></i>Редактировать профиль</a></li>
+                  <li><a href="{% url 'authapp:section_subscribe' %}"><i class="fa fa-calendar"></i>Моя лента</a></li>
+                  <li><a href="{% url 'blogapp:post_create' %}"><i class="fa fa-laptop"></i>Создать статью</a></li>
+                  <li><a href="{% url 'authapp:posts_user_list' %}"><i class="fa fa-calendar"></i>Мои статьи<span class="label label-warning pull-right r-activity">{{ user_post_count }}</span></a></li>
+                  <li><a href="{% url 'authapp:user_comments' %}"><i class="fa fa-calendar"></i>Мои комментарии<span class="label label-warning pull-right r-activity">{{ user_comments_count }}</span></a></li>
+                  {% endif %}
+              </ul>
+          </div>
+      </div>
+      <div class="profile-info col-md-9">
+          <div class="panel">
+          </div>
+          <div class="panel">
+              <div class="bio-graph-heading">
+                  Тут должно быть краткое описание интересов =))))
+              </div>
+              <div class="panel-body bio-graph-info">
+                  <h1 class="bio-graph-info">Биография</h1>
+                  <div class="row">
+                      <div class="bio-row">
+                          <p><span>Имя </span>{{ user_profile.first_name }}</p>
+                      </div>
+                      <div class="bio-row">
+                          <p><span>Фамилия </span>{{ user_profile.last_name }}</p>
+                      </div>
+                      <div class="bio-row">
+                          <p><span>Страна </span> Australia</p>
+                      </div>
+                      <div class="bio-row">
+                          <p><span>День рождения</span> 13 July 1983</p>
+                      </div>
+                      <div class="bio-row">
+                          <p><span>Профессия </span> UI Designer</p>
+                      </div>
+                      <div class="bio-row">
+                          <p><span>Email </span> {{ user_profile.email }}</p>
+                      </div>
+                      <div class="bio-row">
+                          <p><span>Создан</span></p>
+                      </div>
+                      <div class="bio-row">
+                          <p><span>Изменен</span></p>
+                      </div>
+                      <div class="bio-row">
+                          <p><span>Посты</span>{{ user_post_count }}</p>
+                      </div>
+                      <div class="bio-row">
+                          <p><span>Комментарии</span>{{ user_comments_count }}</p>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </div>
+    </div>
+{% endblock %}

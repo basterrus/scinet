@@ -13,7 +13,7 @@ from rest_framework.views import APIView
 
 from authapp.forms import SNUserLoginForm, SNUserRegisterForm, SNUserEditForm, SNUserProfileEditForm
 from authapp.models import SNUser, SNUserProfile
-from blogapp.models import SNPosts, SNSections, SNSubscribe
+from blogapp.models import SNPosts, SNSections, SNSubscribe, Comments
 from authapp.serializers import SNUserSerializer
 
 
@@ -176,3 +176,34 @@ def del_subscribe(request, pk):
     section = SNSections.objects.get(id=pk)
     SNSubscribe.objects.filter(Q(user=user) & Q(section=section)).delete()
     return HttpResponseRedirect(reverse('authapp:section_subscribe'))
+
+
+class SNCommentsDetailView(ListView):
+    """Показывает все коментарии данного пользователя"""
+    template_name = 'authapp/user_auth/show_comments.html'
+
+    def get(self, request):
+        """Получаем для шаблона все комментарии конкретного пользователя"""
+        user = SNUser.objects.get(username=request.user)
+        user_comments = Comments.objects.filter(user=user.id)
+        context = {
+            'user_comments': user_comments,
+        }
+        return render(request, self.template_name, context=context)
+
+
+class SNProfileDetailView(ListView):
+    """Показывает всю активность данного пользователя"""
+    template_name = 'authapp/user_auth/show_profile.html'
+
+    def get(self, request, username):
+        """Получаем для шаблона все данные конкретного пользователя"""
+        user = SNUser.objects.get(username=username)
+        user_comments_count = Comments.objects.filter(user=user.id).count()
+        user_post_count = SNPosts.objects.filter(user=user.id).count()
+        context = {
+            'user_profile': user,
+            'user_comments_count': user_comments_count,
+            'user_post_count': user_post_count,
+        }
+        return render(request, self.template_name, context=context)
