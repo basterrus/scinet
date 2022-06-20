@@ -36,11 +36,11 @@ class LikeDislikeManager(models.Manager):
     def sum_rating(self):
         return self.get_queryset().aggregate(Sum('vote')).get('vote__sum') or 0
 
-    def articles(self):
-        return self.get_queryset().filter(content_type__model='article').order_by('-articles__pub_date')
+    def posts(self):
+        return self.get_queryset().filter(content_type__model='snposts').order_by('-id')
 
     def comments(self):
-        return self.get_queryset().filter(content_type__model='comment').order_by('-comments__pub_date')
+        return self.get_queryset().filter(content_type__model='ncomments').order_by('-id')
 
 
 class LikeDislike(models.Model):
@@ -53,8 +53,8 @@ class LikeDislike(models.Model):
         (LIKE, 'Нравится')
     )
 
-    vote = models.SmallIntegerField(verbose_name="Голос", choices=VOTES)
-    user = models.ForeignKey(SNUser, verbose_name="Пользователь", on_delete=models.CASCADE)
+    vote = models.SmallIntegerField(verbose_name='Голос', choices=VOTES)
+    user = models.ForeignKey(SNUser, verbose_name='Пользователь', on_delete=models.CASCADE)
 
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
@@ -75,7 +75,7 @@ class SNPosts(models.Model):
     is_moderated = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    votes = GenericRelation(LikeDislike, related_query_name='articles')
+    votes = GenericRelation(LikeDislike, related_query_name='snposts')
 
     def __str__(self):
         return f'{self.name}'
@@ -98,7 +98,7 @@ class Comments(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True, db_index=True)
-    votes = GenericRelation(LikeDislike, related_query_name='comments')
+    votes = GenericRelation(LikeDislike, related_query_name='sncomments')
 
     class Meta:
         verbose_name = 'Комментарий'
