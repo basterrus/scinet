@@ -176,7 +176,6 @@ class VotesView(View):
 
     def post(self, request, pk):
         obj = self.model.objects.get(pk=pk)
-        print(f'11111111111111111111111111111111111')
         """GenericForeignKey не поддерживает метод get_or_create"""
         try:
             likedislike = LikeDislike.objects.get(content_type=ContentType.objects.get_for_model(obj), object_id=obj.id,
@@ -194,12 +193,12 @@ class VotesView(View):
 
         return HttpResponse(
             json.dumps({
-                "result": result,
-                "like_count": obj.votes.likes().count(),
-                "dislike_count": obj.votes.dislikes().count(),
-                "sum_rating": obj.votes.sum_rating()
+                'result': result,
+                'like_count': obj.votes.likes().count(),
+                'dislike_count': obj.votes.dislikes().count(),
+                'sum_rating': obj.votes.sum_rating()
             }),
-            content_type="application/json"
+            content_type='application/json'
         )
 
 
