@@ -40,7 +40,7 @@ class LikeDislikeManager(models.Manager):
         return self.get_queryset().filter(content_type__model='snposts').order_by('-id')
 
     def comments(self):
-        return self.get_queryset().filter(content_type__model='ncomments').order_by('-id')
+        return self.get_queryset().filter(content_type__model='sncomments').order_by('-id')
 
 
 class LikeDislike(models.Model):
@@ -103,6 +103,8 @@ class Comments(models.Model):
     class Meta:
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'
+
+    
 
 
 class SNSubscribe(models.Model):
