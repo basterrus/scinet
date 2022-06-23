@@ -29,6 +29,11 @@ class SNPostDetailView(DetailView):
         context['post'] = SNPosts.objects.get(pk=self.kwargs['pk'])
         context['comments'] = Comments.objects.filter(is_active=True, post__pk=self.kwargs['pk'])
         context['title'] = 'Пост'
+        context['is_favorite'] = False
+        if self.request.user.is_authenticated:
+            if SNFavorites.objects.filter(Q(user=self.request.user) &
+                                          Q(post=SNPosts.objects.get(pk=self.kwargs['pk']))):
+                context['is_favorite'] = True
         return context
 
     def get_success_url(self):
@@ -254,19 +259,14 @@ class Favorites(ListView):
         return render(request, self.template_name, context=context)
 
 
-def add_favorites(request, pk):
-    """Добавляет статью в избранное"""
+def change_favorites(request, pk):
+    """Добавляет статью в избранное если её там нет, и удаляет если наоборот"""
     user = SNUser.objects.get(username=request.user)
     post = get_object_or_404(SNPosts, id=pk)
     if not SNFavorites.objects.filter(Q(user=user) & Q(post=post)):
         subscribe = SNFavorites(user=user, post=post)
         subscribe.save()
+    else:
+        SNFavorites.objects.filter(Q(user=user) & Q(post=post)).delete()
     return HttpResponseRedirect(reverse('blogapp:favorites'))
 
-
-def del_favorites(request, pk):
-    """Удаляет статью из избранного"""
-    user = SNUser.objects.get(username=request.user)
-    post = get_object_or_404(SNPosts, id=pk)
-    SNFavorites.objects.filter(Q(user=user) & Q(post=post)).delete()
-    return HttpResponseRedirect(reverse('blogapp:favorites'))

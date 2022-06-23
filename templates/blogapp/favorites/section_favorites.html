@@ -15,11 +15,10 @@
             </tr>
             </thead>
             <tbody>
-            {{ user_favorites }}
             {% for item in user_favorites %}
                 <tr>
                     <td>{{ item.post }}</td>
-                    <td><a href="{% url 'blogapp:favorites_del' item.post.id %}">
+                    <td><a href="{% url 'blogapp:favorite_change' item.post.id %}">
                     <img src="{% static 'img/delete.png' %}" alt="cancel" width="25px">
                     </a></td>
                 </tr>

@@ -22,8 +22,7 @@ urlpatterns = [
     path('notifications_delete/', blogapp.delete_all_notifications, name='notifications_delete_all'),
 
     path('favorites/', blogapp.Favorites.as_view(), name='favorites'),
-    path('favorites/add/<pk>', blogapp.add_favorites, name='favorite_add'),
-    path('favorites/del/<pk>', blogapp.del_favorites, name='favorites_del'),
+    path('favorites/change/<pk>', blogapp.change_favorites, name='favorite_change'),
 
     path('post/<pk>/like/', blogapp.VotesView.as_view(model=SNPosts, vote_type=LikeDislike.LIKE),
          name='post_like'),
