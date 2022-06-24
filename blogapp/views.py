@@ -264,7 +264,7 @@ def make_equal_notifications(notifications):
         new_obj = dict()
         new_obj['pk'] = notify.id
         new_obj['from_user'] = notify.from_user
-        new_obj['updated_at'] = notify.updated_at
+        new_obj['created_at'] = notify.created_at
         new_obj['is_seen'] = notify.is_seen
         content_type = notify.content_type
         # Проверяем, что за контент несет с собой уведомление
