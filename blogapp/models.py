@@ -71,7 +71,7 @@ class SNPosts(models.Model):
     image = models.ImageField(upload_to='posts', blank=True, null=True, verbose_name='Превьюшка поста')
     text = models.TextField(verbose_name='Текст поста')
     short_desc = models.CharField(max_length=255, verbose_name='Краткое описание поста')
-    is_active = models.BooleanField(default=False, db_index=True)
+    is_active = models.BooleanField(default=True, db_index=True)
     is_moderated = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

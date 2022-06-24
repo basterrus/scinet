@@ -23,7 +23,7 @@
             <script src="{% static 'js/likes.js' %}"></script>
             <script src="{% static 'js/favorite.js' %}"></script>
         {% endblock %}
-        {% if user.id == post.user.id %}
+        {% if user.id == post.user.id or user.is_moderator or user.is_superuser %}
             <a href="{% url 'blogs:post_update' post.id %}"
                class="btn btn-outline-secondary me-2 col-4">Редактировать</a>
 
@@ -68,7 +68,7 @@
                         </a> от {{ comment.created_at }}
                     </div>
                     <p>{{ comment.text }}
-                        {% if user.id == comment.user.id %}
+                        {% if user.id == comment.user.id or user.is_moderator or user.is_superuser %}
                             <a href="{% url 'blogs:comment_delete' post_pk=object.id pk=comment.id %}">удалить</a>
                             <a href="{% url 'blogs:comment_update' post_pk=object.id pk=comment.id %}">изменить</a>
                         {% endif %}
