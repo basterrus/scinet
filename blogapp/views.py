@@ -3,6 +3,8 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, UpdateView, DeleteView, DetailView, ListView
+from django.template.loader import render_to_string
+from django.http import JsonResponse
 
 from adminapp.views import AccessMixin, DeleteMixin
 from blogapp.forms import SNPostForm, CommentForm
@@ -40,8 +42,7 @@ class SNPostDetailView(DetailView):
                 comment.user = request.user
                 comment.post = SNPosts.objects.get(pk=self.kwargs['pk'])
                 comment.save()
-                notification = Notifications.create(comment.post, 'C', request.user)
-                notification.save()
+                notify_comment(comment)
                 return HttpResponseRedirect(self.get_success_url())
 
 
@@ -134,8 +135,7 @@ class CommentCreateView(CreateView):
                 comment.user = request.user
                 comment.post = SNPosts.objects.get(pk=post_pk)
                 comment.save()
-                notification = Notifications.create(comment.post, 'C', request.user)
-                notification.save()
+                notify_comment(comment)
                 return HttpResponseRedirect(self.get_success_url())
 
 
@@ -183,12 +183,14 @@ class VotesView(View):
             if likedislike.vote is not self.vote_type:
                 likedislike.vote = self.vote_type
                 likedislike.save(update_fields=['vote'])
+                notify_like(likedislike)
                 result = True
             else:
                 likedislike.delete()
                 result = False
         except LikeDislike.DoesNotExist:
-            obj.votes.create(user=request.user, vote=self.vote_type)
+            likedislike = obj.votes.create(user=request.user, vote=self.vote_type)
+            notify_like(likedislike)
             result = True
 
         return HttpResponse(
@@ -202,6 +204,7 @@ class VotesView(View):
         )
 
 
+"""Уведомления"""
 @method_decorator(login_required, name='dispatch')
 class NotificationListView(ListView):
     """Отображение всех уведомлений пользователя"""
@@ -209,7 +212,9 @@ class NotificationListView(ListView):
     template_name = 'authapp/user_auth/notifications.html'
 
     def get_queryset(self):
-        return super().get_queryset().filter(post__user=self.request.user, is_active=True)
+        user_notifications = super().get_queryset().filter(to_user=self.request.user, is_active=True). \
+            order_by('-updated_at')
+        return make_equal_notifications(user_notifications)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -229,10 +234,120 @@ def delete_notification(request, pk):
 @login_required
 def delete_all_notifications(request):
     """Удалить все уведомления"""
-    notifications = Notifications.objects.filter(post__user=request.user, is_active=True)
+    notifications = Notifications.objects.filter(to_user=request.user, is_active=True)
     for el in notifications:
         el.is_active = False
         el.save()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
+"""Вспомогательные функции для уведомлений"""
+def is_ajax(request):
+    """Почему-то is_ajax не хотел работать, нашел такое вот решение"""
+    return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
+
+
+def make_equal_notifications(notifications):
+    """Создает словари по уведомлениям, чтобы привести форматы их данных к одному виду"""
+    user_notifications = notifications
+    notifications_list = []
+    for notify in user_notifications:
+        new_obj = dict()
+        new_obj['pk'] = notify.id
+        new_obj['from_user'] = notify.from_user
+        new_obj['updated_at'] = notify.updated_at
+        new_obj['is_seen'] = notify.is_seen
+        content_type = notify.content_type
+        # Проверяем, что за контент несет с собой уведомление
+        if content_type.model == 'snposts':
+            new_obj['name'] = 'одобрил публикацию поста:'
+            post = content_type.get_object_for_this_type(id=notify.object_id)
+        elif content_type.model == 'comments':
+            comment = content_type.get_object_for_this_type(id=notify.object_id)
+            new_obj['name'] = f'оставил комментарий: "{comment.text}" под постом:'
+            post = comment.post
+        elif content_type.model == 'likedislike':
+            # У лайков тоже свой контент, поэтому еще проверки
+            like = content_type.get_object_for_this_type(id=notify.object_id)
+            liked_object = like.content_type.get_object_for_this_type(id=like.object_id)
+            if like.content_type.model == 'snposts':
+                if like.vote == 1:
+                    new_obj['name'] = 'оценил пост:'
+                else:
+                    new_obj['name'] = 'негативно оценил пост:'
+                post = liked_object
+            elif like.content_type.model == 'comments':
+                if like.vote == 1:
+                    new_obj['name'] = f'оценил комментарий под постом: {liked_object.post.name}'
+                else:
+                    new_obj['name'] = f'негативно оценил комментарий под постом: {liked_object.post.name}'
+                post = liked_object.post
+        new_obj['post'] = post
+        notifications_list.append(new_obj)
+    return notifications_list
+
+
+def seen_notifications(request):
+    """Помечает уведомления как просмотренные"""
+    if is_ajax(request):
+        notifications = Notifications.objects.filter(to_user=request.user, is_active=True).order_by('-updated_at')
+        for el in notifications:
+            if not el.is_seen:
+                el.is_seen = True
+            el.save()
+
+        context = {
+            'object_list': make_equal_notifications(notifications),
+        }
+
+        result = render_to_string('authapp/includes/inc_notifications.html', context)
+
+        return JsonResponse({'result': result})
+
+
+def check_notifications(request):
+    """Проверяет наличие уведомлений"""
+    if is_ajax(request):
+        notifications = Notifications.objects.filter(to_user=request.user, is_active=True, is_seen=False)
+        if len(notifications) > 0:
+            new_notify = True
+        else:
+            new_notify = False
+
+        context = {
+            'new_notify': new_notify,
+            'user': request.user,
+        }
+
+        result = render_to_string('mainapp/includes/inc_menu.html', context)
+
+        return JsonResponse({'result': result})
+
+
+
+def notify_like(likedislike):
+    """Функция для создания уведомления по лайку"""
+    from_user = likedislike.user
+    content_type = ContentType.objects.get_for_model(likedislike)
+    like_id = likedislike.id
+    like_obj = likedislike.content_type.get_object_for_this_type(id=likedislike.object_id)
+    to_user = like_obj.user
+
+    try:
+        notification = Notifications.objects.get(object_id=like_id, content_type=content_type, to_user=to_user,
+                                                 from_user=from_user)
+        notification.is_seen = False
+    except Notifications.DoesNotExist:
+        notification = Notifications.create(content_type, like_id, to_user, from_user)
+    notification.save()
+
+
+def notify_comment(comment):
+    """Функция для создания уведомления по комментарию"""
+    from_user = comment.user
+    content_type = ContentType.objects.get_for_model(comment)
+    comment_id = comment.id
+    to_user = comment.post.user
+
+    notification = Notifications.create(content_type, comment_id, to_user, from_user)
+    notification.save()

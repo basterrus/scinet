@@ -20,6 +20,7 @@ urlpatterns = [
     path('notifications/', blogapp.NotificationListView.as_view(), name='notifications'),
     path('notification_delete/<pk>', blogapp.delete_notification, name='notification_delete'),
     path('notifications_delete/', blogapp.delete_all_notifications, name='notifications_delete_all'),
+    path('notifications/notifications_set_seen/', blogapp.seen_notifications, name='notifications_set_seen'),
 
     path('post/<pk>/like/', blogapp.VotesView.as_view(model=SNPosts, vote_type=LikeDislike.LIKE),
          name='post_like'),
