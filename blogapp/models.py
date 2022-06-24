@@ -147,3 +147,9 @@ class Notifications(models.Model):
     def create(cls, post, mode, notifier):
         notification = cls(post=post, mode=mode, notifier=notifier)
         return notification
+
+
+class SNFavorites(models.Model):
+    """Избранное пользователя"""
+    user = models.ForeignKey(SNUser, on_delete=models.CASCADE, verbose_name='Пользователь')
+    post = models.ForeignKey(SNPosts, on_delete=models.CASCADE, verbose_name='Пост')
