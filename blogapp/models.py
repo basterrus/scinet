@@ -71,7 +71,7 @@ class SNPosts(models.Model):
     image = models.ImageField(upload_to='posts', blank=True, null=True, verbose_name='Превьюшка поста')
     text = models.TextField(verbose_name='Текст поста')
     short_desc = models.CharField(max_length=255, verbose_name='Краткое описание поста')
-    is_active = models.BooleanField(default=False, db_index=True)
+    is_active = models.BooleanField(default=True, db_index=True)
     is_moderated = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -147,3 +147,9 @@ class Notifications(models.Model):
     def create(cls, content_type, object_id, to_user, from_user):
         notification = cls(content_type=content_type, object_id=object_id, to_user=to_user, from_user=from_user)
         return notification
+
+
+class SNFavorites(models.Model):
+    """Избранное пользователя"""
+    user = models.ForeignKey(SNUser, on_delete=models.CASCADE, verbose_name='Пользователь')
+    post = models.ForeignKey(SNPosts, on_delete=models.CASCADE, verbose_name='Пост')

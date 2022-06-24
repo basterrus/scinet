@@ -6,7 +6,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView, DetailView
 from django.contrib.contenttypes.models import ContentType
 
-from adminapp.forms import SNPostAdminForm
+from adminapp.forms import SNPostAdminForm, SNUserAdminEditForm
 from authapp.forms import SNUserRegisterForm, SNUserEditForm
 from authapp.models import SNUser
 from blogapp.models import SNPosts, SNSections, Notifications
@@ -68,7 +68,7 @@ class SNUserListView(AccessMixin, ListView):
 class SNUserUpdateView(AccessMixin, UpdateView):
     model = SNUser
     template_name = 'adminapp/users_crud/user_form.html'
-    form_class = SNUserEditForm
+    form_class = SNUserAdminEditForm
     success_url = reverse_lazy('index')
 
     def get_context_data(self, **kwargs):

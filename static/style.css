@@ -259,6 +259,7 @@ ul.likes {
     display: flex;
 }
 
+
 .notification_seen {
     background-color: #d0f5f5;
     animation: pulse 1s infinite;
@@ -280,4 +281,10 @@ ul.likes {
 	}
 }
 
+
+
+.custom-search {
+    width: 300px;
+    border-radius: 10px;
+}
 

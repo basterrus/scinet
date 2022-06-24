@@ -22,6 +22,9 @@ urlpatterns = [
     path('notifications_delete/', blogapp.delete_all_notifications, name='notifications_delete_all'),
     path('notifications/notifications_set_seen/', blogapp.seen_notifications, name='notifications_set_seen'),
 
+    path('favorites/', blogapp.Favorites.as_view(), name='favorites'),
+    path('favorites/change/<pk>', blogapp.change_favorites, name='favorite_change'),
+
     path('post/<pk>/like/', blogapp.VotesView.as_view(model=SNPosts, vote_type=LikeDislike.LIKE),
          name='post_like'),
     path('post/<pk>/dislike/', blogapp.VotesView.as_view(model=SNPosts, vote_type=LikeDislike.DISLIKE),
