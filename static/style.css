@@ -258,3 +258,8 @@ ul.likes {
     list-style-type: none;
     display: flex;
 }
+
+.custom-search {
+    width: 300px;
+    border-radius: 10px;
+}

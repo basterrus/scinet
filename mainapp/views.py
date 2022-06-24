@@ -1,7 +1,7 @@
 import random
 from blogapp.models import SNSections, SNPosts
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-
+from django.forms.models import model_to_dict
 from mainapp.filters import PostsFilter
 
 
