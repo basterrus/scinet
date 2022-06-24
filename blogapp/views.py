@@ -1,12 +1,15 @@
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.http import HttpResponseRedirect
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, UpdateView, DeleteView, DetailView, ListView
 
 from adminapp.views import AccessMixin, DeleteMixin
+from authapp.models import SNUser
 from blogapp.forms import SNPostForm, CommentForm
-from blogapp.models import SNPosts, Comments, LikeDislike, Notifications
+from blogapp.models import SNPosts, Comments, LikeDislike, Notifications, SNFavorites
 
 import json
 from django.http import HttpResponse
@@ -26,6 +29,11 @@ class SNPostDetailView(DetailView):
         context['post'] = SNPosts.objects.get(pk=self.kwargs['pk'])
         context['comments'] = Comments.objects.filter(is_active=True, post__pk=self.kwargs['pk'])
         context['title'] = 'Пост'
+        context['is_favorite'] = False
+        if self.request.user.is_authenticated:
+            if SNFavorites.objects.filter(Q(user=self.request.user) &
+                                          Q(post=SNPosts.objects.get(pk=self.kwargs['pk']))):
+                context['is_favorite'] = True
         return context
 
     def get_success_url(self):
@@ -235,4 +243,30 @@ def delete_all_notifications(request):
         el.save()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
+
+class Favorites(ListView):
+    """Показывает всё избранное пользователя"""
+    model = SNFavorites
+    template_name = 'blogapp/favorites/section_favorites.html'
+
+    def get(self, request):
+        """Получаем для шаблона всё избранное конкретного пользователя"""
+        user = SNUser.objects.get(username=request.user)
+        user_favorites = SNFavorites.objects.filter(user=user.id)
+        context = {
+            'user_favorites': user_favorites,
+        }
+        return render(request, self.template_name, context=context)
+
+
+def change_favorites(request, pk):
+    """Добавляет статью в избранное если её там нет, и удаляет если наоборот"""
+    user = SNUser.objects.get(username=request.user)
+    post = get_object_or_404(SNPosts, id=pk)
+    if not SNFavorites.objects.filter(Q(user=user) & Q(post=post)):
+        subscribe = SNFavorites(user=user, post=post)
+        subscribe.save()
+    else:
+        SNFavorites.objects.filter(Q(user=user) & Q(post=post)).delete()
+    return HttpResponseRedirect(reverse('blogapp:favorites'))
 
