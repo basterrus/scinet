@@ -2,7 +2,7 @@
 {% load default %}
 
 <div class="user-info d-flex pt-1">
-    <div class="user-photo pt-1">
+    <div class="user-photo pt-1 user-photo-post">
         <a href="{% url 'authapp:profile_user' post.user.username %}">
             <img src="{{ post.user.avatar|media_for_users }}" alt="user-logo" width="30px" height="30px"></a>
     </div>
