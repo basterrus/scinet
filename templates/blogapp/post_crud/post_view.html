@@ -3,6 +3,11 @@
 {% load media_tags %}
 {% load bootstrap3 %}
 
+{% block js %}
+    <script src="{% static 'js/likes.js' %}"></script>
+    <script src="{% static 'js/favorite.js' %}"></script>
+{% endblock %}
+
 {% block content %}
     <div class="container text">
         <br>
@@ -29,6 +34,7 @@
             {% if user.id == post.user.id or user.is_moderator or user.is_superuser %}
                 <a href="{% url 'blogs:post_update' post.id %}"
                    class="btn btn-outline-secondary me-2 col-4" style="padding-left: 0px;">Редактировать</a>
+
 
                 <a href="{% url 'blogs:post_delete' post.id %}"
                    class="btn btn-outline-secondary me-2 col-4">
