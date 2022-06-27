@@ -18,6 +18,26 @@ body {
     min-height: 100%
 }
 
+.dws-menu li ul{
+    position: absolute;
+    min-width: 150px;
+    display: none;
+}
+
+.dws-menu li > ul li{
+    background: white;
+    border: 1px solid #c7c8ca;
+}
+
+.dws-menu li:hover > ul{
+    display: block;
+}
+
+.dws-menu{
+    padding-top:5px;
+    position: relative;
+    z-index: 1;
+}
 
 /*html, body {*/
 /*    height: 95%;*/
@@ -49,11 +69,15 @@ body {
 
 .main_menu {
     display: flex;
-    padding-top: 20px;
+    padding-top: 24px;
 }
 
 .login_register {
-    padding-top: 20px;
+    padding-top: 22px;
+}
+
+.logo_name {
+    display: flex;
 }
 
 .add {
@@ -298,3 +322,6 @@ ul.navigation {
     max-width: 30px;
 }
 
+.rounded-circle{
+    border-radius: 100px;
+}
