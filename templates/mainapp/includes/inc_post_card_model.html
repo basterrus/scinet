@@ -23,10 +23,12 @@
             <a href="#">
                 <img src="/media/{{ post.image }}" alt="" onerror="this.style.opacity='0'">
             </a>
-        <p class="card-text">{{ post.text|truncatechars:200|safe }}</p>
         </div>
         <div class="blog_meta">
-            <h3>{{ post.name|truncatechars:20 }}</h3>
+            <hr>
+            <h3 class="blog_header">{{ post.name|truncatechars:20 }}</h3>
+            <hr>
+            <p class="card-text">{{ post.text|truncatechars:200|safe }}</p>
             <p><a href="{% url 'blogs:post_read' post.id %}">Читать...</a></p>
         </div>
     </div>
