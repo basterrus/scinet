@@ -194,7 +194,7 @@ class SNCommentsDetailView(ListView):
 
 class SNProfileDetailView(ListView):
     """Показывает всю активность данного пользователя"""
-    template_name = 'authapp/user_auth/show_profile.html'
+    template_name = 'authapp/user_auth/new_profile.html'
 
     def get(self, request, username):
         """Получаем для шаблона все данные конкретного пользователя"""
