@@ -18,6 +18,10 @@ body {
     min-height: 100%
 }
 
+.content{
+    min-height: calc(100vh - 484px);
+}
+
 nav ul {
   list-style: none;
   margin: 0;
