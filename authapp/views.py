@@ -15,6 +15,7 @@ from authapp.forms import SNUserLoginForm, SNUserRegisterForm, SNUserEditForm, S
 from authapp.models import SNUser, SNUserProfile
 from blogapp.models import SNPosts, SNSections, SNSubscribe, Comments
 from authapp.serializers import SNUserSerializer
+from authapp.tasks import task_send_activation_email
 
 
 class LoginView(View):
@@ -60,6 +61,24 @@ class RegisterView(CreateView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Регистрация'
         return context
+
+    def form_valid(self, form):
+        # if self.request.method == 'POST':
+        register_form = SNUserRegisterForm(self.request.POST, self.request.FILES)
+        if register_form.is_valid():
+            new_user = register_form.save()
+            if task_send_activation_email(new_user):
+                print('сообщение подтверждения отправлено')
+                return HttpResponseRedirect(reverse('auth:login'))
+        # else:
+        #     register_form = SNUserRegisterForm()
+
+        context = {
+            'register_form': register_form,
+            'title': 'Регистрация пользователя',
+        }
+
+        return HttpResponseRedirect(reverse('auth:login'), context)
 
 
 class EditView(View):
@@ -207,3 +226,17 @@ class SNProfileDetailView(ListView):
             'user_post_count': user_post_count,
         }
         return render(request, self.template_name, context=context)
+
+
+def verify(request, email, key):
+    user = SNUser.objects.filter(email=email).first()
+    if user:
+        if user.activate_key == key and not user.is_activation_key_expired():
+            user.activate_user()
+            auth.login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+
+    context = {
+        'title': 'Активация',
+    }
+
+    return render(request, 'authapp/register_socifull.html', context)

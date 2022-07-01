@@ -8,11 +8,9 @@
                 {% for category in categories %}
                 <li class="list-group-item text-uppercase">
                     <a href="{% url 'adminapp:sections_all_posts' category.pk %}"
-                       class="text-muted text-decoration-none">{{
-                        category.name }}</a></li>
-                {# <a href="{% url 'sections:posts' category.pk %}" class="text-muted text-decoration-none">{{
-                category.name
-                }}</a></li>#}
+                       class="text-muted text-decoration-none">{{category.name }}</a></li>
+                <a href="{% url 'adminapp:sections_list' category.pk %}"
+                   class="text-muted text-decoration-none">{{category.name }}</a></li>
 
                 {% endfor %}
             </ul>
