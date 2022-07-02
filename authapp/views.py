@@ -219,7 +219,7 @@ class SNDialogsView(View):
 
 class SNCreateDialogsView(View):
     def get(self, request, user_id):
-        chats = SNChat.objects.filter(Q(id=user_id) & Q(id=request.user.id))
+        chats = SNChat.objects.filter(Q(id=user_id) | Q(id=request.user.id))
         if chats.count() == 0:
             chat = SNChat.objects.create()
             chat.members.add(request.user)
