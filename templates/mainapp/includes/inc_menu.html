@@ -56,7 +56,7 @@
                     <li><a href="{% url 'blogapp:post_create' %}">Создать статью</a></li>
                     <li><a href="{% url 'authapp:posts_user_list' %}">Мои статьи</a></li>
                     <li><a href="{% url 'authapp:user_comments' %}">Мои коментарии</a></li>
-                    <li><a href="#">Диалоги</a></li>
+                    <li><a href="{% url 'authapp:user_dialogs' %}">Диалоги</a></li>
                     <li><a href="{% url 'blogapp:favorites' %}">Мои Закладки</a></li>
                     <li><a href="{% url 'auth:logout' %}">Выйти</a></li>
                 </ul>
