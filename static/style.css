@@ -76,10 +76,10 @@ nav a {
 }
 .submenu li a {
   color: #7f7f7f;
-  font-size: 13px;
+  font-size: 11px;
   line-height: 36px;
   padding: 0 25px;
-  font-family: 'Kurale', serif;
+  font-family: "Gill Sans", sans-serif;
 }
 
 /*html, body {*/
@@ -453,4 +453,8 @@ ul.navigation {
 
 .django-ckeditor-widget{
     width: 100%
+}
+
+.date_message {
+    width: 1px;
 }

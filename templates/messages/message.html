@@ -11,7 +11,7 @@
             <li class="drop-left-padding">
                 <strong class="list-group-item-heading"><a href="{{ the_user_url }}">{{ message_item.author.username }}</a></strong>
             </li>
-            <li class="pull-right text-muted"><small>{{ message_item.pub_date|utc }}</small></li>
+            <li class="pull-right"><small>{{ message_item.pub_date|utc }}</small></li>
         </ul>
         <div>{{ message_item.message|safe }}</div>
     </div>

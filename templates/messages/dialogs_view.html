@@ -23,7 +23,7 @@
                                 <li class="drop-left-padding">
                                     <strong class="list-group-item-heading">{{ companion.username }}</strong>
                                 </li>
-                                <li class="pull-right text-muted"><small>{{ last_message.pub_date|utc }}</small></li>
+                                <li class="pull-right date_message"><small>{{ last_message.pub_date|utc }}</small></li>
                             </ul>
                             {% if companion != last_message.author %}
                                 <div>

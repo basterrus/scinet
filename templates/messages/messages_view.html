@@ -15,11 +15,9 @@
     {% load tz %}
     {% if chat %}
         <div id="messages" class="panel">
-            <div id="innerMessages">
-                {% for message in messages %}
-                        {% include 'messages/message.html' with message_item=message %}
-                {% endfor %}
-            </div>
+            {% for message in messages %}
+                    {% include 'messages/message.html' with message_item=message %}
+            {% endfor %}
         </div>
     {% endif %}
     <div id="message_form">
