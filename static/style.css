@@ -46,7 +46,7 @@ nav a {
   height: 70px;
   line-height: 70px;
   font-weight: bold;
-  color: #003559;
+  color: #3F3F3F;
   text-transform: uppercase;
 }
 .down:after {
@@ -54,11 +54,12 @@ nav a {
   margin-left: 8px;
   font-family: FontAwesome;
 }
-.topmenu li a:hover { color: #adadd8; }
+.topmenu li a:hover { color: #000000; }
 .submenu {
   background: white;
-  border: 2px solid #003559;
+  border: 2px solid #bfbfbf;
   position: absolute;
+    border-radius: 5px;
   left: 0;
   visibility: hidden;
   opacity: 0;
@@ -232,9 +233,17 @@ nav a {
 }
 
 .single_blog{
-    border: 2px solid #aeafd9;
+    border: 2px solid #bfbfbf;
     border-radius: 10px;
     padding: 10px;
+}
+
+/*.blog_img {*/
+/*    height: 10px;*/
+/*}*/
+
+.blog_meta {
+    margin: -20px 0px -5px 0px;
 }
 
 .hr{
@@ -326,6 +335,7 @@ a {
 .post_form {
     display: flex;
     flex-direction: column;
+    width: 80%;
 }
 
 .card-img-top {
@@ -380,7 +390,8 @@ ul.likes {
 
 .custom-search {
     width: 300px;
-    border-radius: 10px;
+    border-radius: 5px;
+    border: solid;
 }
 
 
@@ -418,7 +429,7 @@ ul.navigation {
 }
 
 .rounded-circle{
-    border-radius: 100px;
+    border-radius: 5px;
 }
 
 
@@ -429,4 +440,17 @@ ul.navigation {
 
 .not_user{
     font-weight: bold;
+}
+
+.edited_content{
+    display: flex;
+    justify-content: center;
+}
+
+.admin_block{
+    width: 90%;
+}
+
+.django-ckeditor-widget{
+    width: 100%
 }
