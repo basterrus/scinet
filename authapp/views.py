@@ -62,16 +62,8 @@ class RegisterView(CreateView):
         context['title'] = 'Регистрация'
         return context
 
-    def form_valid(self, form):
-        # if self.request.method == 'POST':
-        register_form = SNUserRegisterForm(self.request.POST, self.request.FILES)
-        if register_form.is_valid():
-            new_user = register_form.save()
-            if task_send_activation_email(new_user):
-                print('сообщение подтверждения отправлено')
-                return HttpResponseRedirect(reverse('auth:login'))
-        # else:
-        #     register_form = SNUserRegisterForm()
+    def post(self, request, *args, **kwargs):
+
 
         context = {
             'register_form': register_form,

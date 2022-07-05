@@ -19,4 +19,4 @@ def send_verify_email(user):
     )
 
 
-def send_message_all_moderators(message):
+# def send_message_all_moderators(message):
