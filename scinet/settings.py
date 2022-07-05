@@ -14,6 +14,7 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 from celery.schedules import crontab
+import adminapp.tasks
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -173,17 +174,26 @@ CELERYD_LOG_FILE = os.path.join(
     BASE_DIR, 'celery', 'logs')
 CELERYD_LOG_LEVEL = "INFO"
 
-# CELERY_BEAT_SCHEDULE = {
-#     "sample_task": {
-#         "task": "core.tasks.sample_task",
-#         "schedule": crontab(minute="*/1"),
-#     },
-#     "send_email_report": {
-#         "task": "core.tasks.send_email_report",
-#         "schedule": crontab(hour="*/1"),
-#     },
-# }
-
+CELERY_BEAT_SCHEDULE = {
+    # "sample_task": {
+    #     "task": "core.tasks.sample_task",
+    #     "schedule": crontab(minute="*/1"),
+    # },
+    "send_email_report_new_users": {
+        "task": "adminapp.tasks.send_email_report_new_users",
+        "schedule": crontab(day_of_week="*/1"),
+    },
+    "send_email_report_new_posts": {
+        "task": "adminapp.tasks.send_email_report_new_posts",
+        "schedule": crontab(day_of_week="*/1"),
+    },
+}
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = 'tmp/'
+
+DEFAULT_FROM_EMAIL = "noreply@email.com"
+ADMINS = [("admin", "admin.user@email.com"), ]
+
+DOMAIN_NAME = "https://www.scinet.com"
+

@@ -15,7 +15,6 @@ from authapp.forms import SNUserLoginForm, SNUserRegisterForm, SNUserEditForm, S
 from authapp.models import SNUser, SNUserProfile
 from blogapp.models import SNPosts, SNSections, SNSubscribe, Comments
 from authapp.serializers import SNUserSerializer
-from authapp.tasks import task_send_activation_email
 
 
 class LoginView(View):
@@ -63,11 +62,11 @@ class RegisterView(CreateView):
         return context
 
     def post(self, request, *args, **kwargs):
-
+        pass
 
         context = {
-            'register_form': register_form,
-            'title': 'Регистрация пользователя',
+            # 'register_form': register_form,
+            # 'title': 'Регистрация пользователя',
         }
 
         return HttpResponseRedirect(reverse('auth:login'), context)
