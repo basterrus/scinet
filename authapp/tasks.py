@@ -1,37 +1,19 @@
 from django.conf import settings
-from django.core.mail import send_mail
+from django.core.mail import send_mail, mail_admins
 from django.urls import reverse
-
-# from celery import shared_task
-from authapp.models import SNUser
+from celery import shared_task
 
 
-# @shared_task
-def send_feedback_to_email(message_body: str, message_from: int = None) -> None:
-    if message_from is not None:
-        user_from = SNUser.objects.filter(pk=message_from).first().get_full_name()
-    else:
-        user_from = 'Аноним'
-
-    send_mail(
-        subject=f"Feedback from: {user_from}",
-        message=message_body,
-        recipient_list=['support@mail.com'],
-        from_email='noreply@mail.com',
-        fail_silently=False
-    )
-
-
-# @shared_task
+@shared_task
 def send_verify_email(email_user, activate_key):
-    print(email_user, activate_key)
     verify_link = reverse('auth:verify', args=[email_user, activate_key])
     full_link = f'{settings.DOMAIN_NAME}{verify_link}'
-    print(settings.DOMAIN_NAME)
     message = f'Ссылка для активации вашей учетной записи:  {full_link}'
 
+    send_mail('Account activation', activate_key, settings.EMAIL_HOST_USER, [email_user])
+
     return send_mail(
-        'Account activation',
+        f'Активация аккаунта на сайте {settings.DOMAIN_NAME}',
         message,
         settings.EMAIL_HOST_USER,
         [email_user],

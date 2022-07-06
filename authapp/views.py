@@ -63,18 +63,20 @@ class RegisterView(CreateView):
         context['title'] = 'Регистрация'
         return context
 
-    def post(self, request, *args, **kwargs):
-        register_form = SNUserRegisterForm(request.POST, request.FILES)
-
-        if register_form.is_valid():
-            register_form.save()
-            # activate_key = self.request.user.snuser.activate_key
-            # email_user = self.request.user.snuser.email
-            # tasks.send_verify_email.delay(email_user, activate_key)
+    def form_valid(self, form):
+        super().form_valid(form)
+        if form.is_valid():
+            form.save()
+            email_user = f"{form.cleaned_data['email']}"
+            print(email_user)
+            user = SNUser.objects.filter(email=email_user).first()
+            activate_key = f"{user.activate_key}"
+            print(activate_key)
+            tasks.send_verify_email.delay(email_user, activate_key)
             return HttpResponseRedirect(reverse('auth:login'))
 
         context = {
-            'register_form': register_form,
+            'register_form': form,
             'title': 'Регистрация пользователя',
         }
         return HttpResponseRedirect(reverse('auth:login'), context)

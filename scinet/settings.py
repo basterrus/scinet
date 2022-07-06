@@ -178,7 +178,7 @@ CELERY_BEAT_SCHEDULE = {
     "task_unlocked_users": {
         "task": "adminapp.tasks.task_unlocked_users",
         # "schedule": crontab(day_of_week="*/1"),
-        "schedule": crontab(),
+        "schedule": crontab(),  # Выполнение раз в минуту для наглядности, позже удалить и раскомментировать выше
     },
     "send_email_report_new_users": {
         "task": "adminapp.tasks.send_email_report_new_users",
@@ -197,4 +197,3 @@ DEFAULT_FROM_EMAIL = "noreply@email.com"
 ADMINS = [("admin", "admin.user@email.com"), ]
 
 DOMAIN_NAME = "https://www.scinet.com"
-
