@@ -19,7 +19,8 @@ class SNUser(AbstractUser):
     is_superuser = models.BooleanField(default=False, verbose_name='Администратор')
 
     user_blocked = models.BooleanField(default=False, verbose_name='Заблокирован')
-    date_blocked_end = models.DateTimeField(blank=True, null=True)
+    date_blocked_start = models.DateTimeField(blank=True, null=True, verbose_name='Дата блокировки')
+    date_blocked_end = models.DateTimeField(blank=True, null=True, verbose_name='Дата разблокировки')
 
     activate_key = models.CharField(max_length=128, verbose_name='Ключ активации', blank=True, null=True)
     activate_key_expired = models.DateTimeField(blank=True, null=True)
@@ -38,7 +39,17 @@ class SNUser(AbstractUser):
         self.is_active = True
         self.activate_key = None
         self.activate_key_expired = None
+        self.save()
 
+    def locked_user(self):
+        self.user_blocked = True
+        self.date_blocked_start = datetime.now(pytz.timezone(settings.TIME_ZONE))
+        self.date_blocked_end = self.date_blocked_start + timedelta(days=20)
+        self.save()
+
+    def unlocked_user(self):
+        self.user_blocked = False
+        self.date_blocked_end = None
         self.save()
 
 

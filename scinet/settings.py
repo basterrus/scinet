@@ -175,10 +175,11 @@ CELERYD_LOG_FILE = os.path.join(
 CELERYD_LOG_LEVEL = "INFO"
 
 CELERY_BEAT_SCHEDULE = {
-    # "sample_task": {
-    #     "task": "core.tasks.sample_task",
-    #     "schedule": crontab(minute="*/1"),
-    # },
+    "task_unlocked_users": {
+        "task": "adminapp.tasks.task_unlocked_users",
+        # "schedule": crontab(day_of_week="*/1"),
+        "schedule": crontab(),
+    },
     "send_email_report_new_users": {
         "task": "adminapp.tasks.send_email_report_new_users",
         "schedule": crontab(day_of_week="*/1"),

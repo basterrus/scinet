@@ -11,6 +11,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from authapp import tasks
 from authapp.forms import SNUserLoginForm, SNUserRegisterForm, SNUserEditForm, SNUserProfileEditForm
 from authapp.models import SNUser, SNUserProfile
 from blogapp.models import SNPosts, SNSections, SNSubscribe, Comments
@@ -32,13 +33,14 @@ class LoginView(View):
         username = request.POST['username']
         password = request.POST['password']
         user = auth.authenticate(username=username, password=password)
-        if user:
+        if user.is_active and not user.user_blocked:
             auth.login(request, user)
             return HttpResponseRedirect(reverse('index'))
         form = self.form_class()
         return render(request, self.template_name, context={'form': form,
                                                             'title': 'Логин',
-                                                            'error_text': 'Введён неправильный логин или пароль'})
+                                                            # 'error_text': 'Введён неправильный логин или пароль'})
+                                                            'error_text': 'Ваш аккуант заблокирован'})
 
 
 class LogoutView(View):
@@ -62,13 +64,19 @@ class RegisterView(CreateView):
         return context
 
     def post(self, request, *args, **kwargs):
-        pass
+        register_form = SNUserRegisterForm(request.POST, request.FILES)
+
+        if register_form.is_valid():
+            register_form.save()
+            # activate_key = self.request.user.snuser.activate_key
+            # email_user = self.request.user.snuser.email
+            # tasks.send_verify_email.delay(email_user, activate_key)
+            return HttpResponseRedirect(reverse('auth:login'))
 
         context = {
-            # 'register_form': register_form,
-            # 'title': 'Регистрация пользователя',
+            'register_form': register_form,
+            'title': 'Регистрация пользователя',
         }
-
         return HttpResponseRedirect(reverse('auth:login'), context)
 
 
