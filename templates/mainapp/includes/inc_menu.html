@@ -41,22 +41,22 @@
         <ul class="topmenu">
             <li>
                 <a href="{% url 'authapp:profile_user' user.username %}"
-                   class="down">
+                   class="down {% if new_notify %}notification_seen{% endif %}">
                     <img src="{{ user.avatar | media_for_users}}" alt="mdo" width="32" height="32"
                          class="rounded-circle">
-                    {{ user.username| default:'Пользователь' }} </a>
+                    {{ user.username| default:'Пользователь' }}</a>
                 <ul class="submenu">
                     {% if user.is_superuser %}
                     <li><a href="#">Админ панель</a></li>
                     {% endif %}
                     <li><a href="{% url 'authapp:profile_user' user.username %}">Мой Профиль</a>
                     </li>
-                    <li><a href="{% url 'blogapp:notifications' %}">Уведомления</a></li>
+                    <li><a href="{% url 'blogapp:notifications' %}" {% if new_notify %}class="notification_seen"{% endif %}>Уведомления</a></li>
                     <li><a href="{% url 'authapp:section_subscribe' %}">Моя лента</a></li>
                     <li><a href="{% url 'blogapp:post_create' %}">Создать статью</a></li>
                     <li><a href="{% url 'authapp:posts_user_list' %}">Мои статьи</a></li>
                     <li><a href="{% url 'authapp:user_comments' %}">Мои коментарии</a></li>
-                    <li><a href="#">Диалоги</a></li>
+                    <li><a href="{% url 'authapp:user_dialogs' %}">Диалоги</a></li>
                     <li><a href="{% url 'blogapp:favorites' %}">Мои Закладки</a></li>
                     <li><a href="{% url 'auth:logout' %}">Выйти</a></li>
                 </ul>
@@ -64,7 +64,7 @@
         </ul>
     </nav>
     {% else %}
-    <p><a href="{% url 'auth:login' %}"><i class="flaticon-user"></i>Войти</a> | <a href="{% url 'auth:register' %}">Регистрация</a>
+    <p style="margin-top: 22px;"><a href="{% url 'auth:login' %}"><i class="flaticon-user"></i>Войти</a> | <a href="{% url 'auth:register' %}">Регистрация</a>
     </p>
     {% endif %}
 </div>
